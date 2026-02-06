@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your cricket and tennis bets">
+    <meta name="theme-color" content="#1e293b">
+    
+    <title>Betting Tracker</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+        }
+        
+        .card {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-purple {
+            background: #9333ea;
+            color: white;
+        }
+        
+        .btn-purple:hover {
+            background: #7e22ce;
+        }
+        
+        .btn-gray {
+            background: #334155;
+            color: white;
+        }
+        
+        .btn-gray:hover {
+            background: #475569;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: #334155;
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .input:focus {
+            outline: 2px solid #3b82f6;
+        }
+        
+        select.input {
+            cursor: pointer;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        @media (max-width: 768px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .text-green {
+            color: #22c55e;
+        }
+        
+        .text-red {
+            color: #ef4444;
+        }
+        
+        .text-yellow {
+            color: #eab308;
+        }
+        
+        .text-blue {
+            color: #3b82f6;
+        }
+        
+        .text-gray {
+            color: #94a3b8;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .items-start {
+            align-items: flex-start;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .delete-btn:hover {
+            color: #fca5a5;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+            color: #e2e8f0;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <!-- React from CDN with fallback -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Main App (Pure JavaScript - No Babel needed) -->
+    <script>
+        (function() {
+            'use strict';
+            
+            const { useState, useEffect, createElement: h } = React;
+            const STORAGE_KEY = 'betting-tracker-bets';
+            const DEFAULT_PASSWORD = 'admin123';
+
+            const getTodayDate = () => new Date().toISOString().split('T')[0];
+
+            function App() {
+                const [bets, setBets] = useState([]);
+                const [isAuthenticated, setIsAuthenticated] = useState(false);
+                const [password, setPassword] = useState('');
+                const [showAddBet, setShowAddBet] = useState(false);
+                const [showStats, setShowStats] = useState(false);
+                const [newBet, setNewBet] = useState({
+                    sport: 'cricket',
+                    match: '',
+                    bet: '',
+                    stake: '',
+                    odds: '',
+                    outcome: 'pending',
+                    date: getTodayDate()
+                });
+
+                useEffect(() => {
+                    const storedBets = localStorage.getItem(STORAGE_KEY);
+                    if (storedBets) {
+                        try {
+                            setBets(JSON.parse(storedBets));
+                        } catch (e) {
+                            console.error('Error loading bets:', e);
+                        }
+                    }
+                }, []);
+
+                const saveBets = (newBets) => {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(newBets));
+                    setBets(newBets);
+                };
+
+                const handlePasswordSubmit = (e) => {
+                    e.preventDefault();
+                    if (password === DEFAULT_PASSWORD) {
+                        setIsAuthenticated(true);
+                        setPassword('');
+                    } else {
+                        alert('Incorrect password');
+                    }
+                };
+
+                const handleAddBet = (e) => {
+                    e.preventDefault();
+                    const bet = {
+                        ...newBet,
+                        id: Date.now(),
+                        stake: parseFloat(newBet.stake),
+                        odds: parseFloat(newBet.odds),
+                        potentialReturn: parseFloat(newBet.stake) * parseFloat(newBet.odds)
+                    };
+                    saveBets([...bets, bet]);
+                    setNewBet({
+                        sport: 'cricket',
+                        match: '',
+                        bet: '',
+                        stake: '',
+                        odds: '',
+                        outcome: 'pending',
+                        date: getTodayDate()
+                    });
+                    setShowAddBet(false);
+                };
+
+                const updateBetOutcome = (id, outcome) => {
+                    const updatedBets = bets.map(bet => {
+                        if (bet.id === id) {
+                            const profit = outcome === 'won' 
+                                ? (bet.stake * bet.odds) - bet.stake 
+                                : outcome === 'lost' 
+                                ? -bet.stake 
+                                : 0;
+                            return { ...bet, outcome, profit };
+                        }
+                        return bet;
+                    });
+                    saveBets(updatedBets);
+                };
+
+                const deleteBet = (id) => {
+                    if (confirm('Delete this bet?')) {
+                        saveBets(bets.filter(bet => bet.id !== id));
+                    }
+                };
+
+                const calculateStats = (filteredBets) => {
+                    const totalBets = filteredBets.length;
+                    const wonBets = filteredBets.filter(b => b.outcome === 'won').length;
+                    const lostBets = filteredBets.filter(b => b.outcome === 'lost').length;
+                    const totalStake = filteredBets.reduce((sum, b) => sum + b.stake, 0);
+                    const totalProfit = filteredBets.reduce((sum, b) => sum + (b.profit || 0), 0);
+                    const winRate = totalBets > 0 ? (wonBets / totalBets * 100).toFixed(1) : 0;
+                    const roi = totalStake > 0 ? (totalProfit / totalStake * 100).toFixed(1) : 0;
+
+                    return {
+                        totalBets,
+                        wonBets,
+                        lostBets,
+                        pendingBets: totalBets - wonBets - lostBets,
+                        totalStake: totalStake.toFixed(2),
+                        totalProfit: totalProfit.toFixed(2),
+                        winRate,
+                        roi
+                    };
+                };
+
+                const getFilteredBets = (days) => {
+                    if (days === 'all') return bets;
+                    const cutoffDate = new Date();
+                    cutoffDate.setDate(cutoffDate.getDate() - days);
+                    return bets.filter(bet => new Date(bet.date) >= cutoffDate);
+                };
+
+                const todaysBets = bets.filter(bet => bet.date === getTodayDate());
+
+                // Stats View
+                if (showStats && isAuthenticated) {
+                    const last7Days = getFilteredBets(7);
+                    const last30Days = getFilteredBets(30);
+                    const allTime = getFilteredBets('all');
+                    const cricketBets = bets.filter(b => b.sport === 'cricket');
+                    const tennisBets = bets.filter(b => b.sport === 'tennis');
+
+                    return h('div', { className: 'container' },
+                        h('div', { className: 'flex justify-between items-start mb-6' },
+                            h('h1', { className: 'text-3xl font-bold' }, '📊 Statistics'),
+                            h('button', { onClick: () => setShowStats(false), className: 'btn btn-gray' }, '← Back')
+                        ),
+                        h('div', { className: 'space-y-4' },
+                            [
+                                { title: 'Last 7 Days', data: calculateStats(last7Days) },
+                                { title: 'Last 30 Days', data: calculateStats(last30Days) },
+                                { title: 'All Time', data: calculateStats(allTime) }
+                            ].map(({ title, data }) =>
+                                h('div', { key: title, className: 'card' },
+                                    h('h2', { className: 'text-xl font-bold mb-4' }, title),
+                                    h('div', { className: 'grid grid-cols-4 gap-4' },
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Total Bets'),
+                                            h('div', { className: 'text-2xl font-bold' }, data.totalBets)
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Win Rate'),
+                                            h('div', { className: 'text-2xl font-bold text-green' }, data.winRate + '%')
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'ROI'),
+                                            h('div', { className: 'text-2xl font-bold text-blue' }, data.roi + '%')
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Profit/Loss'),
+                                            h('div', { className: `text-2xl font-bold ${parseFloat(data.totalProfit) >= 0 ? 'text-green' : 'text-red'}` }, '₹' + data.totalProfit)
+                                        )
+                                    ),
+                                    h('div', { className: 'text-sm text-gray', style: { marginTop: '1rem' } },
+                                        `Won: ${data.wonBets} | Lost: ${data.lostBets} | Pending: ${data.pendingBets} | Total Stake: ₹${data.totalStake}`
+                                    )
+                                )
+                            ),
+                            h('div', { className: 'card' },
+                                h('h2', { className: 'text-xl font-bold mb-4' }, 'Sport Breakdown'),
+                                h('div', { className: 'grid grid-cols-2 gap-4' },
+                                    h('div', null,
+                                        h('h3', { className: 'text-lg font-semibold mb-4' }, '🏏 Cricket'),
+                                        (() => {
+                                            const stats = calculateStats(cricketBets);
+                                            return h('div', { className: 'text-sm' },
+                                                h('div', null, 'Bets: ' + stats.totalBets),
+                                                h('div', null, 'Win Rate: ' + stats.winRate + '%'),
+                                                h('div', null, 'ROI: ' + stats.roi + '%'),
+                                                h('div', { className: parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red' }, 'P/L: ₹' + stats.totalProfit)
+                                            );
+                                        })()
+                                    ),
+                                    h('div', null,
+                                        h('h3', { className: 'text-lg font-semibold mb-4' }, '🎾 Tennis'),
+                                        (() => {
+                                            const stats = calculateStats(tennisBets);
+                                            return h('div', { className: 'text-sm' },
+                                                h('div', null, 'Bets: ' + stats.totalBets),
+                                                h('div', null, 'Win Rate: ' + stats.winRate + '%'),
+                                                h('div', null, 'ROI: ' + stats.roi + '%'),
+                                                h('div', { className: parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red' }, 'P/L: ₹' + stats.totalProfit)
+                                            );
+                                        })()
+                                    )
+                                )
+                            )
+                        )
+                    );
+                }
+
+                // Main View
+                return h('div', { className: 'container' },
+                    h('div', { className: 'header' },
+                        h('h1', { className: 'title' }, '🎯 Betting Tracker'),
+                        h('p', { className: 'subtitle' }, "Today's Bets - " + new Date().toLocaleDateString())
+                    ),
+
+                    !isAuthenticated ? 
+                        h('div', { className: 'card' },
+                            h('h2', { className: 'card-title' }, 'Creator Access'),
+                            h('form', { onSubmit: handlePasswordSubmit },
+                                h('div', { className: 'flex gap-2' },
+                                    h('input', {
+                                        type: 'password',
+                                        value: password,
+                                        onChange: (e) => setPassword(e.target.value),
+                                        placeholder: 'Enter password (default: admin123)',
+                                        className: 'input flex-1'
+                                    }),
+                                    h('button', { type: 'submit', className: 'btn btn-primary' }, 'Login')
+                                )
+                            )
+                        )
+                    :
+                        h('div', { className: 'card' },
+                            h('div', { className: 'flex flex-wrap gap-2' },
+                                h('button', { onClick: () => setShowAddBet(true), className: 'btn btn-success' }, '+ Add New Bet'),
+                                h('button', { onClick: () => setShowStats(true), className: 'btn btn-purple' }, '📊 View Stats'),
+                                h('button', { onClick: () => setIsAuthenticated(false), className: 'btn btn-danger' }, 'Logout')
+                            )
+                        ),
+
+                    showAddBet && h('div', { className: 'card' },
+                        h('h2', { className: 'card-title' }, 'Add New Bet'),
+                        h('form', { onSubmit: handleAddBet },
+                            h('div', null,
+                                h('label', null, 'Sport'),
+                                h('select', {
+                                    value: newBet.sport,
+                                    onChange: (e) => setNewBet({ ...newBet, sport: e.target.value }),
+                                    className: 'input'
+                                },
+                                    h('option', { value: 'cricket' }, '🏏 Cricket'),
+                                    h('option', { value: 'tennis' }, '🎾 Tennis')
+                                )
+                            ),
+                            h('div', null,
+                                h('label', null, 'Match'),
+                                h('input', {
+                                    type: 'text',
+                                    value: newBet.match,
+                                    onChange: (e) => setNewBet({ ...newBet, match: e.target.value }),
+                                    placeholder: 'e.g., India vs Australia',
+                                    className: 'input',
+                                    required: true
+                                })
+                            ),
+                            h('div', null,
+                                h('label', null, 'Bet Description'),
+                                h('input', {
+                                    type: 'text',
+                                    value: newBet.bet,
+                                    onChange: (e) => setNewBet({ ...newBet, bet: e.target.value }),
+                                    placeholder: 'e.g., India to win',
+                                    className: 'input',
+                                    required: true
+                                })
+                            ),
+                            h('div', { className: 'grid grid-cols-2 gap-4' },
+                                h('div', null,
+                                    h('label', null, 'Stake (₹)'),
+                                    h('input', {
+                                        type: 'number',
+                                        step: '0.01',
+                                        value: newBet.stake,
+                                        onChange: (e) => setNewBet({ ...newBet, stake: e.target.value }),
+                                        placeholder: '1000',
+                                        className: 'input',
+                                        required: true
+                                    })
+                                ),
+                                h('div', null,
+                                    h('label', null, 'Odds'),
+                                    h('input', {
+                                        type: 'number',
+                                        step: '0.01',
+                                        value: newBet.odds,
+                                        onChange: (e) => setNewBet({ ...newBet, odds: e.target.value }),
+                                        placeholder: '2.5',
+                                        className: 'input',
+                                        required: true
+                                    })
+                                )
+                            ),
+                            h('div', { className: 'flex gap-2' },
+                                h('button', { type: 'submit', className: 'btn btn-success flex-1' }, 'Add Bet'),
+                                h('button', { type: 'button', onClick: () => setShowAddBet(false), className: 'btn btn-gray flex-1' }, 'Cancel')
+                            )
+                        )
+                    ),
+
+                    h('div', { className: 'space-y-4' },
+                        h('h2', { className: 'text-2xl font-bold' }, `Today's Bets (${todaysBets.length})`),
+                        todaysBets.length === 0 ?
+                            h('div', { className: 'card text-center text-gray' }, 'No bets placed today')
+                        :
+                            todaysBets.map((bet) =>
+                                h('div', { key: bet.id, className: 'card' },
+                                    h('div', { className: 'flex justify-between items-start mb-4' },
+                                        h('div', null,
+                                            h('div', { className: 'text-xl font-bold' }, (bet.sport === 'cricket' ? '🏏' : '🎾') + ' ' + bet.match),
+                                            h('div', { className: 'text-gray' }, bet.bet)
+                                        ),
+                                        isAuthenticated && h('button', { onClick: () => deleteBet(bet.id), className: 'delete-btn' }, '✕')
+                                    ),
+                                    h('div', { className: 'grid grid-cols-4 gap-4 mb-4' },
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Stake'),
+                                            h('div', { className: 'font-semibold' }, '₹' + bet.stake)
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Odds'),
+                                            h('div', { className: 'font-semibold' }, bet.odds)
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Potential Return'),
+                                            h('div', { className: 'font-semibold text-green' }, '₹' + bet.potentialReturn.toFixed(2))
+                                        ),
+                                        h('div', null,
+                                            h('div', { className: 'text-sm text-gray' }, 'Outcome'),
+                                            isAuthenticated ?
+                                                h('select', {
+                                                    value: bet.outcome,
+                                                    onChange: (e) => updateBetOutcome(bet.id, e.target.value),
+                                                    className: `input ${bet.outcome === 'won' ? 'text-green' : bet.outcome === 'lost' ? 'text-red' : 'text-yellow'}`,
+                                                    style: { fontSize: '0.875rem', padding: '0.25rem 0.5rem' }
+                                                },
+                                                    h('option', { value: 'pending' }, '⏳ Pending'),
+                                                    h('option', { value: 'won' }, '✅ Won'),
+                                                    h('option', { value: 'lost' }, '❌ Lost')
+                                                )
+                                            :
+                                                h('div', { className: `font-semibold ${bet.outcome === 'won' ? 'text-green' : bet.outcome === 'lost' ? 'text-red' : 'text-yellow'}` },
+                                                    bet.outcome === 'won' ? '✅ Won' : bet.outcome === 'lost' ? '❌ Lost' : '⏳ Pending'
+                                                )
+                                        )
+                                    ),
+                                    bet.profit !== undefined && bet.profit !== 0 &&
+                                        h('div', { className: `text-right font-bold ${bet.profit > 0 ? 'text-green' : 'text-red'}` },
+                                            (bet.profit > 0 ? '+' : '') + '₹' + bet.profit.toFixed(2)
+                                        )
+                                )
+                            )
+                    ),
+
+                    todaysBets.length > 0 && h('div', { className: 'card' },
+                        h('h3', { className: 'text-lg font-bold mb-4' }, "Today's Summary"),
+                        (() => {
+                            const stats = calculateStats(todaysBets);
+                            return h('div', { className: 'grid grid-cols-4 gap-4' },
+                                h('div', null,
+                                    h('div', { className: 'text-sm text-gray' }, 'Total Bets'),
+                                    h('div', { className: 'text-xl font-bold' }, stats.totalBets)
+                                ),
+                                h('div', null,
+                                    h('div', { className: 'text-sm text-gray' }, 'Total Stake'),
+                                    h('div', { className: 'text-xl font-bold' }, '₹' + stats.totalStake)
+                                ),
+                                h('div', null,
+                                    h('div', { className: 'text-sm text-gray' }, 'Pending'),
+                                    h('div', { className: 'text-xl font-bold text-yellow' }, stats.pendingBets)
+                                ),
+                                h('div', null,
+                                    h('div', { className: 'text-sm text-gray' }, 'P/L'),
+                                    h('div', { className: `text-xl font-bold ${parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red'}` }, '₹' + stats.totalProfit)
+                                )
+                            );
+                        })()
+                    )
+                );
+            }
+
+            // Render app
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(React.createElement(App));
+        })();
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(function(reg) { console.log('✅ Service Worker registered'); })
+                    .catch(function(err) { console.log('⚠️ Service Worker needs HTTPS'); });
+            });
+        }
+    </script>
+</body>
+</html>
