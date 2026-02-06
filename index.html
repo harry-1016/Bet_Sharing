@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Track your cricket and tennis bets">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#0a0e1a">
     
     <title>Betting Tracker</title>
     
@@ -22,117 +22,196 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #0f172a;
+            background: #0a0e1a;
             color: white;
             overflow-x: hidden;
             min-height: 100vh;
         }
         
         .container {
-            max-width: 1024px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem;
+            padding: 1.5rem;
         }
         
         .header {
-            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
         .title {
-            font-size: 1.875rem;
-            font-weight: bold;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
         }
         
         .subtitle {
-            color: #94a3b8;
+            color: #8b92b0;
+            font-size: 1.1rem;
         }
         
         .card {
-            background: #1e293b;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 1.5rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
         
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .stat-card.red {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .stat-card.yellow {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(234, 179, 8, 0.1) 100%);
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+        
+        .stat-label {
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
         }
         
         .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .btn-primary {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
             color: white;
         }
         
         .btn-primary:hover {
-            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.4);
         }
         
         .btn-success {
-            background: #22c55e;
-            color: white;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
         }
         
         .btn-success:hover {
-            background: #16a34a;
+            background: rgba(34, 197, 94, 0.3);
         }
         
         .btn-danger {
-            background: #ef4444;
-            color: white;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
         }
         
         .btn-danger:hover {
-            background: #dc2626;
+            background: rgba(239, 68, 68, 0.3);
         }
         
         .btn-purple {
-            background: #9333ea;
-            color: white;
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            color: #9333ea;
         }
         
         .btn-purple:hover {
-            background: #7e22ce;
+            background: rgba(147, 51, 234, 0.3);
         }
         
         .btn-gray {
-            background: #334155;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
         }
         
         .btn-gray:hover {
-            background: #475569;
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .input {
             width: 100%;
-            padding: 0.5rem 1rem;
-            background: #334155;
-            border: none;
-            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             color: white;
             font-size: 1rem;
+            transition: all 0.2s;
         }
         
         .input:focus {
-            outline: 2px solid #3b82f6;
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
         }
         
         select.input {
             cursor: pointer;
+        }
+        
+        label {
+            display: block;
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
         
         .flex {
@@ -147,7 +226,7 @@
             gap: 0.5rem;
         }
         
-        .gap-4 {
+        .gap-3 {
             gap: 1rem;
         }
         
@@ -155,144 +234,251 @@
             margin-bottom: 1rem;
         }
         
-        .mb-6 {
-            margin-bottom: 1.5rem;
+        .bet-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
         }
         
-        .grid {
-            display: grid;
+        .bet-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
         }
         
-        .grid-cols-2 {
-            grid-template-columns: repeat(2, 1fr);
+        .bet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         
-        .grid-cols-4 {
-            grid-template-columns: repeat(4, 1fr);
-        }
-        
-        @media (max-width: 768px) {
-            .grid-cols-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        .text-sm {
-            font-size: 0.875rem;
-        }
-        
-        .text-lg {
-            font-size: 1.125rem;
-        }
-        
-        .text-xl {
+        .bet-title {
             font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
         
-        .text-2xl {
-            font-size: 1.5rem;
+        .bet-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
         }
         
-        .text-3xl {
-            font-size: 1.875rem;
+        .bet-detail {
+            display: flex;
+            flex-direction: column;
         }
         
-        .font-bold {
-            font-weight: bold;
+        .detail-label {
+            color: #8b92b0;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
         }
         
-        .font-semibold {
+        .detail-value {
+            font-size: 1rem;
             font-weight: 600;
         }
         
-        .text-green {
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-cricket {
+            background: rgba(34, 197, 94, 0.15);
             color: #22c55e;
         }
         
-        .text-red {
+        .badge-tennis {
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+        }
+        
+        .badge-pending {
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+        }
+        
+        .badge-won {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        
+        .badge-lost {
+            background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
-        }
-        
-        .text-yellow {
-            color: #eab308;
-        }
-        
-        .text-blue {
-            color: #3b82f6;
-        }
-        
-        .text-gray {
-            color: #94a3b8;
-        }
-        
-        .text-right {
-            text-align: right;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .justify-between {
-            justify-content: space-between;
-        }
-        
-        .items-start {
-            align-items: flex-start;
-        }
-        
-        .flex-1 {
-            flex: 1;
-        }
-        
-        .space-y-4 > * + * {
-            margin-top: 1rem;
         }
         
         .delete-btn {
-            background: none;
-            border: none;
+            padding: 0.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
             color: #ef4444;
             cursor: pointer;
             font-size: 1.25rem;
-            padding: 0.25rem 0.5rem;
+            line-height: 1;
+            transition: all 0.2s;
         }
         
         .delete-btn:hover {
-            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.3);
         }
         
-        label {
-            display: block;
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
-            color: #e2e8f0;
-        }
-        
-        form {
+        .filter-tabs {
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 0.625rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: capitalize;
+            transition: all 0.2s;
+        }
+        
+        .filter-tab.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
+        }
+        
+        .empty-state {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal {
+            background: #1a1f2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8b92b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.75rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .bet-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
-    
-    <!-- React from CDN with fallback -->
+
+    <!-- React and ReactDOM from CDN -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Main App (Pure JavaScript - No Babel needed) -->
+
     <script>
         (function() {
-            'use strict';
-            
-            const { useState, useEffect, createElement: h } = React;
-            const STORAGE_KEY = 'betting-tracker-bets';
-            const DEFAULT_PASSWORD = 'admin123';
+            const { useState, useEffect } = React;
+            const h = React.createElement;
 
-            const getTodayDate = () => new Date().toISOString().split('T')[0];
+            // Password configuration (change this line to update password)
+            const DEFAULT_PASSWORD = 'admin123';
 
             function App() {
                 const [bets, setBets] = useState([]);
@@ -300,210 +486,161 @@
                 const [password, setPassword] = useState('');
                 const [showAddBet, setShowAddBet] = useState(false);
                 const [showStats, setShowStats] = useState(false);
+                const [statsFilter, setStatsFilter] = useState('all');
+                const [successMsg, setSuccessMsg] = useState('');
+                const [errorMsg, setErrorMsg] = useState('');
                 const [newBet, setNewBet] = useState({
                     sport: 'cricket',
                     match: '',
                     bet: '',
                     stake: '',
-                    odds: '',
-                    outcome: 'pending',
-                    date: getTodayDate()
+                    odds: ''
                 });
 
+                // Load bets from localStorage
                 useEffect(() => {
-                    const storedBets = localStorage.getItem(STORAGE_KEY);
-                    if (storedBets) {
-                        try {
-                            setBets(JSON.parse(storedBets));
-                        } catch (e) {
-                            console.error('Error loading bets:', e);
-                        }
+                    const saved = localStorage.getItem('bets');
+                    if (saved) {
+                        setBets(JSON.parse(saved));
                     }
                 }, []);
 
-                const saveBets = (newBets) => {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(newBets));
-                    setBets(newBets);
+                // Save bets to localStorage
+                useEffect(() => {
+                    localStorage.setItem('bets', JSON.stringify(bets));
+                }, [bets]);
+
+                const showSuccess = (msg) => {
+                    setSuccessMsg(msg);
+                    setTimeout(() => setSuccessMsg(''), 3000);
                 };
 
-                const handlePasswordSubmit = (e) => {
+                const showError = (msg) => {
+                    setErrorMsg(msg);
+                    setTimeout(() => setErrorMsg(''), 3000);
+                };
+
+                const handleLogin = (e) => {
                     e.preventDefault();
                     if (password === DEFAULT_PASSWORD) {
                         setIsAuthenticated(true);
                         setPassword('');
+                        showSuccess('Login successful!');
                     } else {
-                        alert('Incorrect password');
+                        showError('Incorrect password');
                     }
                 };
 
                 const handleAddBet = (e) => {
                     e.preventDefault();
                     const bet = {
-                        ...newBet,
                         id: Date.now(),
+                        ...newBet,
                         stake: parseFloat(newBet.stake),
                         odds: parseFloat(newBet.odds),
-                        potentialReturn: parseFloat(newBet.stake) * parseFloat(newBet.odds)
-                    };
-                    saveBets([...bets, bet]);
-                    setNewBet({
-                        sport: 'cricket',
-                        match: '',
-                        bet: '',
-                        stake: '',
-                        odds: '',
+                        potentialReturn: parseFloat(newBet.stake) * parseFloat(newBet.odds),
                         outcome: 'pending',
-                        date: getTodayDate()
-                    });
+                        profit: 0,
+                        date: new Date().toISOString().split('T')[0],
+                        createdAt: new Date().toISOString()
+                    };
+                    setBets([bet, ...bets]);
+                    setNewBet({ sport: 'cricket', match: '', bet: '', stake: '', odds: '' });
                     setShowAddBet(false);
+                    showSuccess('Bet added successfully!');
                 };
 
                 const updateBetOutcome = (id, outcome) => {
-                    const updatedBets = bets.map(bet => {
+                    setBets(bets.map(bet => {
                         if (bet.id === id) {
                             const profit = outcome === 'won' 
-                                ? (bet.stake * bet.odds) - bet.stake 
+                                ? bet.potentialReturn - bet.stake 
                                 : outcome === 'lost' 
                                 ? -bet.stake 
                                 : 0;
                             return { ...bet, outcome, profit };
                         }
                         return bet;
-                    });
-                    saveBets(updatedBets);
+                    }));
+                    showSuccess(`Bet marked as ${outcome}`);
                 };
 
                 const deleteBet = (id) => {
-                    if (confirm('Delete this bet?')) {
-                        saveBets(bets.filter(bet => bet.id !== id));
+                    if (confirm('Are you sure you want to delete this bet?')) {
+                        setBets(bets.filter(bet => bet.id !== id));
+                        showSuccess('Bet deleted');
                     }
                 };
 
-                const calculateStats = (filteredBets) => {
-                    const totalBets = filteredBets.length;
-                    const wonBets = filteredBets.filter(b => b.outcome === 'won').length;
-                    const lostBets = filteredBets.filter(b => b.outcome === 'lost').length;
-                    const totalStake = filteredBets.reduce((sum, b) => sum + b.stake, 0);
-                    const totalProfit = filteredBets.reduce((sum, b) => sum + (b.profit || 0), 0);
-                    const winRate = totalBets > 0 ? (wonBets / totalBets * 100).toFixed(1) : 0;
-                    const roi = totalStake > 0 ? (totalProfit / totalStake * 100).toFixed(1) : 0;
+                // Get today's bets
+                const today = new Date().toISOString().split('T')[0];
+                const todaysBets = bets.filter(bet => bet.date === today);
+
+                // Calculate statistics
+                const calculateStats = (betsList) => {
+                    const totalBets = betsList.length;
+                    const wonBets = betsList.filter(b => b.outcome === 'won').length;
+                    const lostBets = betsList.filter(b => b.outcome === 'lost').length;
+                    const pendingBets = betsList.filter(b => b.outcome === 'pending').length;
+                    const totalStake = betsList.reduce((sum, b) => sum + b.stake, 0).toFixed(2);
+                    const totalProfit = betsList.reduce((sum, b) => sum + b.profit, 0).toFixed(2);
+                    const winRate = totalBets > 0 ? ((wonBets / (wonBets + lostBets)) * 100 || 0).toFixed(1) : '0.0';
+                    const roi = parseFloat(totalStake) > 0 ? ((parseFloat(totalProfit) / parseFloat(totalStake)) * 100).toFixed(1) : '0.0';
 
                     return {
                         totalBets,
                         wonBets,
                         lostBets,
-                        pendingBets: totalBets - wonBets - lostBets,
-                        totalStake: totalStake.toFixed(2),
-                        totalProfit: totalProfit.toFixed(2),
+                        pendingBets,
+                        totalStake,
+                        totalProfit,
                         winRate,
                         roi
                     };
                 };
 
-                const getFilteredBets = (days) => {
-                    if (days === 'all') return bets;
-                    const cutoffDate = new Date();
-                    cutoffDate.setDate(cutoffDate.getDate() - days);
-                    return bets.filter(bet => new Date(bet.date) >= cutoffDate);
+                // Get stats for different time periods
+                const getFilteredBets = (filter) => {
+                    const now = new Date();
+                    if (filter === 'week') {
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        return bets.filter(b => new Date(b.date) >= weekAgo);
+                    } else if (filter === 'month') {
+                        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        return bets.filter(b => new Date(b.date) >= monthAgo);
+                    }
+                    return bets;
                 };
 
-                const todaysBets = bets.filter(bet => bet.date === getTodayDate());
+                const filteredBets = getFilteredBets(statsFilter);
+                const stats = calculateStats(filteredBets);
+                const cricketStats = calculateStats(filteredBets.filter(b => b.sport === 'cricket'));
+                const tennisStats = calculateStats(filteredBets.filter(b => b.sport === 'tennis'));
 
-                // Stats View
-                if (showStats && isAuthenticated) {
-                    const last7Days = getFilteredBets(7);
-                    const last30Days = getFilteredBets(30);
-                    const allTime = getFilteredBets('all');
-                    const cricketBets = bets.filter(b => b.sport === 'cricket');
-                    const tennisBets = bets.filter(b => b.sport === 'tennis');
-
-                    return h('div', { className: 'container' },
-                        h('div', { className: 'flex justify-between items-start mb-6' },
-                            h('h1', { className: 'text-3xl font-bold' }, '📊 Statistics'),
-                            h('button', { onClick: () => setShowStats(false), className: 'btn btn-gray' }, '← Back')
-                        ),
-                        h('div', { className: 'space-y-4' },
-                            [
-                                { title: 'Last 7 Days', data: calculateStats(last7Days) },
-                                { title: 'Last 30 Days', data: calculateStats(last30Days) },
-                                { title: 'All Time', data: calculateStats(allTime) }
-                            ].map(({ title, data }) =>
-                                h('div', { key: title, className: 'card' },
-                                    h('h2', { className: 'text-xl font-bold mb-4' }, title),
-                                    h('div', { className: 'grid grid-cols-4 gap-4' },
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Total Bets'),
-                                            h('div', { className: 'text-2xl font-bold' }, data.totalBets)
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Win Rate'),
-                                            h('div', { className: 'text-2xl font-bold text-green' }, data.winRate + '%')
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'ROI'),
-                                            h('div', { className: 'text-2xl font-bold text-blue' }, data.roi + '%')
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Profit/Loss'),
-                                            h('div', { className: `text-2xl font-bold ${parseFloat(data.totalProfit) >= 0 ? 'text-green' : 'text-red'}` }, '₹' + data.totalProfit)
-                                        )
-                                    ),
-                                    h('div', { className: 'text-sm text-gray', style: { marginTop: '1rem' } },
-                                        `Won: ${data.wonBets} | Lost: ${data.lostBets} | Pending: ${data.pendingBets} | Total Stake: ₹${data.totalStake}`
-                                    )
-                                )
-                            ),
-                            h('div', { className: 'card' },
-                                h('h2', { className: 'text-xl font-bold mb-4' }, 'Sport Breakdown'),
-                                h('div', { className: 'grid grid-cols-2 gap-4' },
-                                    h('div', null,
-                                        h('h3', { className: 'text-lg font-semibold mb-4' }, '🏏 Cricket'),
-                                        (() => {
-                                            const stats = calculateStats(cricketBets);
-                                            return h('div', { className: 'text-sm' },
-                                                h('div', null, 'Bets: ' + stats.totalBets),
-                                                h('div', null, 'Win Rate: ' + stats.winRate + '%'),
-                                                h('div', null, 'ROI: ' + stats.roi + '%'),
-                                                h('div', { className: parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red' }, 'P/L: ₹' + stats.totalProfit)
-                                            );
-                                        })()
-                                    ),
-                                    h('div', null,
-                                        h('h3', { className: 'text-lg font-semibold mb-4' }, '🎾 Tennis'),
-                                        (() => {
-                                            const stats = calculateStats(tennisBets);
-                                            return h('div', { className: 'text-sm' },
-                                                h('div', null, 'Bets: ' + stats.totalBets),
-                                                h('div', null, 'Win Rate: ' + stats.winRate + '%'),
-                                                h('div', null, 'ROI: ' + stats.roi + '%'),
-                                                h('div', { className: parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red' }, 'P/L: ₹' + stats.totalProfit)
-                                            );
-                                        })()
-                                    )
-                                )
-                            )
-                        )
-                    );
-                }
-
-                // Main View
                 return h('div', { className: 'container' },
                     h('div', { className: 'header' },
                         h('h1', { className: 'title' }, '🎯 Betting Tracker'),
-                        h('p', { className: 'subtitle' }, "Today's Bets - " + new Date().toLocaleDateString())
+                        h('p', { className: 'subtitle' }, 'Track your cricket and tennis bets')
                     ),
 
-                    !isAuthenticated ? 
+                    // Success/Error Messages
+                    successMsg && h('div', { className: 'alert alert-success' }, successMsg),
+                    errorMsg && h('div', { className: 'alert alert-error' }, errorMsg),
+
+                    // Creator Login/Controls
+                    !isAuthenticated ?
                         h('div', { className: 'card' },
-                            h('h2', { className: 'card-title' }, 'Creator Access'),
-                            h('form', { onSubmit: handlePasswordSubmit },
+                            h('h2', { className: 'card-title' }, '🔒 Creator Access'),
+                            h('p', { style: { color: '#8b92b0', marginBottom: '1rem' } }, 'Enter password to add and manage bets'),
+                            h('form', { onSubmit: handleLogin },
                                 h('div', { className: 'flex gap-2' },
                                     h('input', {
                                         type: 'password',
                                         value: password,
                                         onChange: (e) => setPassword(e.target.value),
-                                        placeholder: 'Enter password (default: admin123)',
-                                        className: 'input flex-1'
+                                        placeholder: 'Enter password',
+                                        className: 'input',
+                                        style: { flex: 1 }
                                     }),
                                     h('button', { type: 'submit', className: 'btn btn-primary' }, 'Login')
                                 )
@@ -512,16 +649,30 @@
                     :
                         h('div', { className: 'card' },
                             h('div', { className: 'flex flex-wrap gap-2' },
-                                h('button', { onClick: () => setShowAddBet(true), className: 'btn btn-success' }, '+ Add New Bet'),
-                                h('button', { onClick: () => setShowStats(true), className: 'btn btn-purple' }, '📊 View Stats'),
-                                h('button', { onClick: () => setIsAuthenticated(false), className: 'btn btn-danger' }, 'Logout')
+                                h('button', { 
+                                    onClick: () => setShowAddBet(!showAddBet), 
+                                    className: 'btn btn-success' 
+                                }, showAddBet ? 'Cancel' : '+ Add New Bet'),
+                                h('button', { 
+                                    onClick: () => setShowStats(!showStats), 
+                                    className: 'btn btn-purple' 
+                                }, showStats ? 'Hide Stats' : '📊 View Stats'),
+                                h('button', { 
+                                    onClick: () => {
+                                        setIsAuthenticated(false);
+                                        setShowAddBet(false);
+                                        setShowStats(false);
+                                    }, 
+                                    className: 'btn btn-danger' 
+                                }, 'Logout')
                             )
                         ),
 
+                    // Add Bet Form
                     showAddBet && h('div', { className: 'card' },
-                        h('h2', { className: 'card-title' }, 'Add New Bet'),
+                        h('h2', { style: { fontSize: '1.25rem', fontWeight: '700', marginBottom: '1.5rem' } }, 'Add New Bet'),
                         h('form', { onSubmit: handleAddBet },
-                            h('div', null,
+                            h('div', { className: 'form-group' },
                                 h('label', null, 'Sport'),
                                 h('select', {
                                     value: newBet.sport,
@@ -532,7 +683,7 @@
                                     h('option', { value: 'tennis' }, '🎾 Tennis')
                                 )
                             ),
-                            h('div', null,
+                            h('div', { className: 'form-group' },
                                 h('label', null, 'Match'),
                                 h('input', {
                                     type: 'text',
@@ -543,7 +694,7 @@
                                     required: true
                                 })
                             ),
-                            h('div', null,
+                            h('div', { className: 'form-group' },
                                 h('label', null, 'Bet Description'),
                                 h('input', {
                                     type: 'text',
@@ -554,8 +705,8 @@
                                     required: true
                                 })
                             ),
-                            h('div', { className: 'grid grid-cols-2 gap-4' },
-                                h('div', null,
+                            h('div', { className: 'grid-2' },
+                                h('div', { className: 'form-group' },
                                     h('label', null, 'Stake (₹)'),
                                     h('input', {
                                         type: 'number',
@@ -567,7 +718,7 @@
                                         required: true
                                     })
                                 ),
-                                h('div', null,
+                                h('div', { className: 'form-group' },
                                     h('label', null, 'Odds'),
                                     h('input', {
                                         type: 'number',
@@ -581,86 +732,275 @@
                                 )
                             ),
                             h('div', { className: 'flex gap-2' },
-                                h('button', { type: 'submit', className: 'btn btn-success flex-1' }, 'Add Bet'),
-                                h('button', { type: 'button', onClick: () => setShowAddBet(false), className: 'btn btn-gray flex-1' }, 'Cancel')
+                                h('button', { type: 'submit', className: 'btn btn-success', style: { flex: 1 } }, 'Add Bet'),
+                                h('button', { 
+                                    type: 'button', 
+                                    onClick: () => setShowAddBet(false), 
+                                    className: 'btn btn-gray',
+                                    style: { flex: 1 }
+                                }, 'Cancel')
                             )
                         )
                     ),
 
-                    h('div', { className: 'space-y-4' },
-                        h('h2', { className: 'text-2xl font-bold' }, `Today's Bets (${todaysBets.length})`),
+                    // Statistics Dashboard (Creator Only)
+                    showStats && isAuthenticated && h('div', { className: 'modal-overlay', onClick: () => setShowStats(false) },
+                        h('div', { className: 'modal', onClick: (e) => e.stopPropagation() },
+                            h('div', { className: 'modal-header' },
+                                h('h2', { className: 'modal-title' }, '📊 Statistics Dashboard'),
+                                h('button', { className: 'close-btn', onClick: () => setShowStats(false) }, '✕')
+                            ),
+
+                            // Time Filter
+                            h('div', { className: 'filter-tabs' },
+                                h('button', { 
+                                    className: `filter-tab ${statsFilter === 'week' ? 'active' : ''}`,
+                                    onClick: () => setStatsFilter('week')
+                                }, 'Last 7 Days'),
+                                h('button', { 
+                                    className: `filter-tab ${statsFilter === 'month' ? 'active' : ''}`,
+                                    onClick: () => setStatsFilter('month')
+                                }, 'Last 30 Days'),
+                                h('button', { 
+                                    className: `filter-tab ${statsFilter === 'all' ? 'active' : ''}`,
+                                    onClick: () => setStatsFilter('all')
+                                }, 'All Time')
+                            ),
+
+                            // Overall Stats
+                            h('div', { style: { marginBottom: '2rem' } },
+                                h('h3', { style: { fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' } }, 'Overall Performance'),
+                                h('div', { className: 'stats-grid' },
+                                    h('div', { className: 'stat-card' },
+                                        h('div', { className: 'stat-label' }, '📊 Total Bets'),
+                                        h('div', { className: 'stat-value' }, stats.totalBets)
+                                    ),
+                                    h('div', { className: 'stat-card green' },
+                                        h('div', { className: 'stat-label' }, '✅ Win Rate'),
+                                        h('div', { className: 'stat-value', style: { color: '#22c55e' } }, stats.winRate + '%')
+                                    ),
+                                    h('div', { className: 'stat-card yellow' },
+                                        h('div', { className: 'stat-label' }, '💰 Total Staked'),
+                                        h('div', { className: 'stat-value', style: { color: '#facc15' } }, '₹' + stats.totalStake)
+                                    ),
+                                    h('div', { className: 'stat-card ' + (parseFloat(stats.totalProfit) >= 0 ? 'green' : 'red') },
+                                        h('div', { className: 'stat-label' }, '📈 Profit/Loss'),
+                                        h('div', { 
+                                            className: 'stat-value', 
+                                            style: { color: parseFloat(stats.totalProfit) >= 0 ? '#22c55e' : '#ef4444' } 
+                                        }, (parseFloat(stats.totalProfit) >= 0 ? '+' : '') + '₹' + stats.totalProfit)
+                                    ),
+                                    h('div', { className: 'stat-card ' + (parseFloat(stats.roi) >= 0 ? 'green' : 'red') },
+                                        h('div', { className: 'stat-label' }, '💹 ROI'),
+                                        h('div', { 
+                                            className: 'stat-value', 
+                                            style: { color: parseFloat(stats.roi) >= 0 ? '#22c55e' : '#ef4444' } 
+                                        }, (parseFloat(stats.roi) >= 0 ? '+' : '') + stats.roi + '%')
+                                    ),
+                                    h('div', { className: 'stat-card yellow' },
+                                        h('div', { className: 'stat-label' }, '⏳ Pending'),
+                                        h('div', { className: 'stat-value', style: { color: '#facc15' } }, stats.pendingBets)
+                                    )
+                                )
+                            ),
+
+                            // Sport Breakdown
+                            h('div', null,
+                                h('h3', { style: { fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' } }, 'Sport Breakdown'),
+                                h('div', { style: { display: 'grid', gap: '1.5rem' } },
+                                    // Cricket Stats
+                                    cricketStats.totalBets > 0 && h('div', { className: 'card' },
+                                        h('h4', { style: { fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' } }, '🏏 Cricket'),
+                                        h('div', { className: 'stats-grid' },
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Total Bets'),
+                                                h('div', { style: { fontSize: '1.5rem', fontWeight: '700' } }, cricketStats.totalBets)
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Win Rate'),
+                                                h('div', { 
+                                                    style: { fontSize: '1.5rem', fontWeight: '700', color: '#22c55e' } 
+                                                }, cricketStats.winRate + '%')
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'ROI'),
+                                                h('div', { 
+                                                    style: { 
+                                                        fontSize: '1.5rem', 
+                                                        fontWeight: '700',
+                                                        color: parseFloat(cricketStats.roi) >= 0 ? '#22c55e' : '#ef4444'
+                                                    } 
+                                                }, (parseFloat(cricketStats.roi) >= 0 ? '+' : '') + cricketStats.roi + '%')
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Profit/Loss'),
+                                                h('div', { 
+                                                    style: { 
+                                                        fontSize: '1.5rem', 
+                                                        fontWeight: '700',
+                                                        color: parseFloat(cricketStats.totalProfit) >= 0 ? '#22c55e' : '#ef4444'
+                                                    } 
+                                                }, (parseFloat(cricketStats.totalProfit) >= 0 ? '+' : '') + '₹' + cricketStats.totalProfit)
+                                            )
+                                        )
+                                    ),
+                                    // Tennis Stats
+                                    tennisStats.totalBets > 0 && h('div', { className: 'card' },
+                                        h('h4', { style: { fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem' } }, '🎾 Tennis'),
+                                        h('div', { className: 'stats-grid' },
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Total Bets'),
+                                                h('div', { style: { fontSize: '1.5rem', fontWeight: '700' } }, tennisStats.totalBets)
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Win Rate'),
+                                                h('div', { 
+                                                    style: { fontSize: '1.5rem', fontWeight: '700', color: '#22c55e' } 
+                                                }, tennisStats.winRate + '%')
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'ROI'),
+                                                h('div', { 
+                                                    style: { 
+                                                        fontSize: '1.5rem', 
+                                                        fontWeight: '700',
+                                                        color: parseFloat(tennisStats.roi) >= 0 ? '#22c55e' : '#ef4444'
+                                                    } 
+                                                }, (parseFloat(tennisStats.roi) >= 0 ? '+' : '') + tennisStats.roi + '%')
+                                            ),
+                                            h('div', null,
+                                                h('div', { className: 'stat-label' }, 'Profit/Loss'),
+                                                h('div', { 
+                                                    style: { 
+                                                        fontSize: '1.5rem', 
+                                                        fontWeight: '700',
+                                                        color: parseFloat(tennisStats.totalProfit) >= 0 ? '#22c55e' : '#ef4444'
+                                                    } 
+                                                }, (parseFloat(tennisStats.totalProfit) >= 0 ? '+' : '') + '₹' + tennisStats.totalProfit)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+
+                    // Today's Bets Section
+                    h('div', null,
+                        h('h2', { style: { fontSize: '1.5rem', fontWeight: '700', marginBottom: '1rem' } }, 
+                            `📅 Today's Bets (${todaysBets.length})`
+                        ),
                         todaysBets.length === 0 ?
-                            h('div', { className: 'card text-center text-gray' }, 'No bets placed today')
+                            h('div', { className: 'empty-state' },
+                                h('div', { className: 'empty-icon' }, '🎯'),
+                                h('h3', { style: { fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' } }, 'No bets placed today'),
+                                h('p', { style: { color: '#8b92b0' } }, 
+                                    isAuthenticated ? 'Click "Add New Bet" to get started' : 'Check back later for new bets'
+                                )
+                            )
                         :
-                            todaysBets.map((bet) =>
-                                h('div', { key: bet.id, className: 'card' },
-                                    h('div', { className: 'flex justify-between items-start mb-4' },
-                                        h('div', null,
-                                            h('div', { className: 'text-xl font-bold' }, (bet.sport === 'cricket' ? '🏏' : '🎾') + ' ' + bet.match),
-                                            h('div', { className: 'text-gray' }, bet.bet)
-                                        ),
-                                        isAuthenticated && h('button', { onClick: () => deleteBet(bet.id), className: 'delete-btn' }, '✕')
-                                    ),
-                                    h('div', { className: 'grid grid-cols-4 gap-4 mb-4' },
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Stake'),
-                                            h('div', { className: 'font-semibold' }, '₹' + bet.stake)
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Odds'),
-                                            h('div', { className: 'font-semibold' }, bet.odds)
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Potential Return'),
-                                            h('div', { className: 'font-semibold text-green' }, '₹' + bet.potentialReturn.toFixed(2))
-                                        ),
-                                        h('div', null,
-                                            h('div', { className: 'text-sm text-gray' }, 'Outcome'),
-                                            isAuthenticated ?
-                                                h('select', {
-                                                    value: bet.outcome,
-                                                    onChange: (e) => updateBetOutcome(bet.id, e.target.value),
-                                                    className: `input ${bet.outcome === 'won' ? 'text-green' : bet.outcome === 'lost' ? 'text-red' : 'text-yellow'}`,
-                                                    style: { fontSize: '0.875rem', padding: '0.25rem 0.5rem' }
-                                                },
-                                                    h('option', { value: 'pending' }, '⏳ Pending'),
-                                                    h('option', { value: 'won' }, '✅ Won'),
-                                                    h('option', { value: 'lost' }, '❌ Lost')
+                            h('div', null,
+                                todaysBets.map((bet) =>
+                                    h('div', { key: bet.id, className: 'bet-card' },
+                                        h('div', { className: 'bet-header' },
+                                            h('div', { style: { flex: 1 } },
+                                                h('div', { className: 'bet-title' }, 
+                                                    (bet.sport === 'cricket' ? '🏏' : '🎾') + ' ' + bet.match
+                                                ),
+                                                h('div', { style: { color: '#8b92b0', marginBottom: '0.5rem' } }, bet.bet),
+                                                h('div', { style: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' } },
+                                                    h('span', { 
+                                                        className: bet.sport === 'cricket' ? 'badge badge-cricket' : 'badge badge-tennis' 
+                                                    }, bet.sport)
                                                 )
-                                            :
-                                                h('div', { className: `font-semibold ${bet.outcome === 'won' ? 'text-green' : bet.outcome === 'lost' ? 'text-red' : 'text-yellow'}` },
-                                                    bet.outcome === 'won' ? '✅ Won' : bet.outcome === 'lost' ? '❌ Lost' : '⏳ Pending'
+                                            ),
+                                            isAuthenticated && h('button', { 
+                                                onClick: () => deleteBet(bet.id), 
+                                                className: 'delete-btn',
+                                                title: 'Delete bet'
+                                            }, '✕')
+                                        ),
+                                        h('div', { className: 'bet-details' },
+                                            h('div', { className: 'bet-detail' },
+                                                h('div', { className: 'detail-label' }, 'STAKE'),
+                                                h('div', { className: 'detail-value' }, '₹' + bet.stake.toFixed(2))
+                                            ),
+                                            h('div', { className: 'bet-detail' },
+                                                h('div', { className: 'detail-label' }, 'ODDS'),
+                                                h('div', { className: 'detail-value' }, bet.odds)
+                                            ),
+                                            h('div', { className: 'bet-detail' },
+                                                h('div', { className: 'detail-label' }, 'POTENTIAL RETURN'),
+                                                h('div', { className: 'detail-value', style: { color: '#22c55e' } }, 
+                                                    '₹' + bet.potentialReturn.toFixed(2)
                                                 )
-                                        )
-                                    ),
-                                    bet.profit !== undefined && bet.profit !== 0 &&
-                                        h('div', { className: `text-right font-bold ${bet.profit > 0 ? 'text-green' : 'text-red'}` },
-                                            (bet.profit > 0 ? '+' : '') + '₹' + bet.profit.toFixed(2)
-                                        )
+                                            ),
+                                            h('div', { className: 'bet-detail' },
+                                                h('div', { className: 'detail-label' }, 'OUTCOME'),
+                                                isAuthenticated ?
+                                                    h('select', {
+                                                        value: bet.outcome,
+                                                        onChange: (e) => updateBetOutcome(bet.id, e.target.value),
+                                                        className: 'input',
+                                                        style: { 
+                                                            padding: '0.25rem 0.5rem',
+                                                            fontSize: '0.875rem',
+                                                            color: bet.outcome === 'won' ? '#22c55e' : 
+                                                                   bet.outcome === 'lost' ? '#ef4444' : '#facc15'
+                                                        }
+                                                    },
+                                                        h('option', { value: 'pending' }, '⏳ Pending'),
+                                                        h('option', { value: 'won' }, '✅ Won'),
+                                                        h('option', { value: 'lost' }, '❌ Lost')
+                                                    )
+                                                :
+                                                    h('span', { 
+                                                        className: `badge badge-${bet.outcome}`
+                                                    }, 
+                                                        bet.outcome === 'won' ? '✅ Won' : 
+                                                        bet.outcome === 'lost' ? '❌ Lost' : '⏳ Pending'
+                                                    )
+                                            )
+                                        ),
+                                        bet.profit !== 0 && 
+                                            h('div', { 
+                                                style: { 
+                                                    marginTop: '1rem',
+                                                    textAlign: 'right',
+                                                    fontSize: '1.125rem',
+                                                    fontWeight: '700',
+                                                    color: bet.profit > 0 ? '#22c55e' : '#ef4444'
+                                                } 
+                                            }, (bet.profit > 0 ? '+' : '') + '₹' + bet.profit.toFixed(2))
+                                    )
                                 )
                             )
                     ),
 
-                    todaysBets.length > 0 && h('div', { className: 'card' },
-                        h('h3', { className: 'text-lg font-bold mb-4' }, "Today's Summary"),
+                    // Today's Summary
+                    todaysBets.length > 0 && h('div', { className: 'card', style: { marginTop: '1.5rem' } },
+                        h('h3', { style: { fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' } }, "Today's Summary"),
                         (() => {
-                            const stats = calculateStats(todaysBets);
-                            return h('div', { className: 'grid grid-cols-4 gap-4' },
-                                h('div', null,
-                                    h('div', { className: 'text-sm text-gray' }, 'Total Bets'),
-                                    h('div', { className: 'text-xl font-bold' }, stats.totalBets)
+                            const todayStats = calculateStats(todaysBets);
+                            return h('div', { className: 'stats-grid' },
+                                h('div', { className: 'stat-card' },
+                                    h('div', { className: 'stat-label' }, 'Total Bets'),
+                                    h('div', { className: 'stat-value' }, todayStats.totalBets)
                                 ),
-                                h('div', null,
-                                    h('div', { className: 'text-sm text-gray' }, 'Total Stake'),
-                                    h('div', { className: 'text-xl font-bold' }, '₹' + stats.totalStake)
+                                h('div', { className: 'stat-card yellow' },
+                                    h('div', { className: 'stat-label' }, 'Total Stake'),
+                                    h('div', { className: 'stat-value', style: { color: '#facc15' } }, '₹' + todayStats.totalStake)
                                 ),
-                                h('div', null,
-                                    h('div', { className: 'text-sm text-gray' }, 'Pending'),
-                                    h('div', { className: 'text-xl font-bold text-yellow' }, stats.pendingBets)
+                                h('div', { className: 'stat-card yellow' },
+                                    h('div', { className: 'stat-label' }, 'Pending'),
+                                    h('div', { className: 'stat-value', style: { color: '#facc15' } }, todayStats.pendingBets)
                                 ),
-                                h('div', null,
-                                    h('div', { className: 'text-sm text-gray' }, 'P/L'),
-                                    h('div', { className: `text-xl font-bold ${parseFloat(stats.totalProfit) >= 0 ? 'text-green' : 'text-red'}` }, '₹' + stats.totalProfit)
+                                h('div', { className: 'stat-card ' + (parseFloat(todayStats.totalProfit) >= 0 ? 'green' : 'red') },
+                                    h('div', { className: 'stat-label' }, 'P/L'),
+                                    h('div', { 
+                                        className: 'stat-value',
+                                        style: { color: parseFloat(todayStats.totalProfit) >= 0 ? '#22c55e' : '#ef4444' }
+                                    }, (parseFloat(todayStats.totalProfit) >= 0 ? '+' : '') + '₹' + todayStats.totalProfit)
                                 )
                             );
                         })()
