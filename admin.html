@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin panel for betting tracker">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>Betting Tracker - Admin</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="./manifest-admin.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0e1a;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(239, 68, 68, 0.2) 100%);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #9333ea 0%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #8b92b0;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .stat-card.red {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .stat-card.yellow {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(234, 179, 8, 0.1) 100%);
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+        
+        .stat-label {
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #9333ea 0%, #ef4444 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(147, 51, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .btn-success:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-gray {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-gray:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+        }
+        
+        .bet-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .bet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .bet-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bet-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-label {
+            color: #8b92b0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-cricket {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .badge-tennis {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .badge-pending {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+        }
+        
+        .badge-won {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .badge-lost {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #8b92b0;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            color: #22c55e;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .sync-status.syncing {
+            background: rgba(250, 204, 21, 0.2);
+            border-color: rgba(250, 204, 21, 0.3);
+            color: #facc15;
+        }
+
+        .sync-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 5rem auto;
+            text-align: center;
+        }
+
+        .login-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt42a0V8MwGiZkBLskaMdlc174J6A38xM",
+            authDomain: "bet-tracker-b1e5c.firebaseapp.com",
+            projectId: "bet-tracker-b1e5c",
+            storageBucket: "bet-tracker-b1e5c.firebasestorage.app
+            messagingSenderId: "389597679794",
+            appId: "1:389597679794:web:7ac0205182e6cd35b179ab"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        let auth = null;
+        let firebaseInitialized = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            firebaseInitialized = true;
+            console.log('✅ Firebase initialized');
+        } catch (error) {
+            console.error('⚠️ Firebase initialization failed:', error);
+            alert('Firebase not configured. Please update the configuration.');
+        }
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        let bets = [];
+        let isAuthenticated = false;
+        let currentUser = null;
+        let syncStatus = 'synced';
+        const ADMIN_PASSWORD = 'Hari@1016'; // CHANGE THIS!
+
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            if (password === ADMIN_PASSWORD) {
+                isAuthenticated = true;
+                signInAdmin();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        async function signInAdmin() {
+            if (!firebaseInitialized) return;
+            try {
+                await auth.signInAnonymously();
+            } catch (error) {
+                console.error('Sign-in error:', error);
+            }
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            if (auth) {
+                auth.signOut();
+            }
+            render();
+        }
+
+        // Listen to auth state
+        if (firebaseInitialized) {
+            auth.onAuthStateChanged((user) => {
+                currentUser = user;
+                if (user && isAuthenticated) {
+                    loadBetsFromFirebase();
+                }
+            });
+        }
+
+        // ============================================
+        // FIREBASE FUNCTIONS
+        // ============================================
+        function loadBetsFromFirebase() {
+            if (!firebaseInitialized || !db) return;
+
+            syncStatus = 'syncing';
+            render();
+
+            db.collection('bets')
+                .orderBy('timestamp', 'desc')
+                .onSnapshot((snapshot) => {
+                    bets = [];
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        bets.push({
+                            id: doc.id,
+                            sport: data.sport,
+                            match: data.match,
+                            bet: data.bet,
+                            stake: parseFloat(data.stake),
+                            odds: parseFloat(data.odds),
+                            potentialReturn: parseFloat(data.potentialReturn),
+                            outcome: data.outcome || 'pending',
+                            profit: parseFloat(data.profit || 0),
+                            timestamp: data.timestamp?.toDate() || new Date(),
+                            userId: data.userId
+                        });
+                    });
+                    
+                    syncStatus = 'synced';
+                    render();
+                    console.log(`✅ Loaded ${bets.length} bets`);
+                }, (error) => {
+                    console.error('Error loading bets:', error);
+                    syncStatus = 'error';
+                    render();
+                });
+        }
+
+        async function addBetToFirebase(betData) {
+            if (!firebaseInitialized || !db || !currentUser) {
+                alert('Not connected to database');
+                return;
+            }
+
+            syncStatus = 'syncing';
+            render();
+
+            try {
+                const stake = parseFloat(betData.stake);
+                const odds = parseFloat(betData.odds);
+                const potentialReturn = stake * odds;
+
+                await db.collection('bets').add({
+                    sport: betData.sport,
+                    match: betData.match,
+                    bet: betData.bet,
+                    stake: stake,
+                    odds: odds,
+                    potentialReturn: potentialReturn,
+                    outcome: 'pending',
+                    profit: 0,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    userId: currentUser.uid
+                });
+
+                // Clear form
+                document.getElementById('addBetForm').reset();
+                console.log('✅ Bet added');
+            } catch (error) {
+                console.error('Error adding bet:', error);
+                alert('Failed to add bet: ' + error.message);
+                syncStatus = 'error';
+                render();
+            }
+        }
+
+        async function updateBetOutcomeInFirebase(betId, outcome) {
+            if (!firebaseInitialized || !db) return;
+
+            syncStatus = 'syncing';
+            render();
+
+            try {
+                const bet = bets.find(b => b.id === betId);
+                if (!bet) return;
+
+                let profit = 0;
+                if (outcome === 'won') {
+                    profit = bet.potentialReturn - bet.stake;
+                } else if (outcome === 'lost') {
+                    profit = -bet.stake;
+                }
+
+                await db.collection('bets').doc(betId).update({
+                    outcome: outcome,
+                    profit: profit
+                });
+
+                console.log('✅ Bet outcome updated');
+            } catch (error) {
+                console.error('Error updating bet:', error);
+                syncStatus = 'error';
+                render();
+            }
+        }
+
+        async function deleteBetFromFirebase(betId) {
+            if (!firebaseInitialized || !db) return;
+            if (!confirm('Are you sure you want to delete this bet?')) return;
+
+            syncStatus = 'syncing';
+            render();
+
+            try {
+                await db.collection('bets').doc(betId).delete();
+                console.log('✅ Bet deleted');
+            } catch (error) {
+                console.error('Error deleting bet:', error);
+                alert('Failed to delete bet: ' + error.message);
+                syncStatus = 'error';
+                render();
+            }
+        }
+
+        // ============================================
+        // STATISTICS
+        // ============================================
+        function calculateStats(betsToAnalyze) {
+            const totalBets = betsToAnalyze.length;
+            const wonBets = betsToAnalyze.filter(b => b.outcome === 'won').length;
+            const lostBets = betsToAnalyze.filter(b => b.outcome === 'lost').length;
+            const pendingBets = betsToAnalyze.filter(b => b.outcome === 'pending').length;
+            
+            const totalStake = betsToAnalyze.reduce((sum, b) => sum + b.stake, 0).toFixed(2);
+            const totalProfit = betsToAnalyze.reduce((sum, b) => sum + b.profit, 0).toFixed(2);
+            
+            const winRate = totalBets > 0 ? ((wonBets / (wonBets + lostBets)) * 100).toFixed(1) : '0.0';
+            const roi = parseFloat(totalStake) > 0 ? ((parseFloat(totalProfit) / parseFloat(totalStake)) * 100).toFixed(1) : '0.0';
+            
+            return {
+                totalBets,
+                wonBets,
+                lostBets,
+                pendingBets,
+                totalStake,
+                totalProfit,
+                winRate,
+                roi
+            };
+        }
+
+        // ============================================
+        // RENDER
+        // ============================================
+        function render() {
+            const root = document.getElementById('root');
+
+            // Login screen
+            if (!isAuthenticated) {
+                root.innerHTML = `
+                    <div class="login-container">
+                        <div class="login-card">
+                            <div class="login-icon">🔐</div>
+                            <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Admin Login</h1>
+                            <p style="color: #8b92b0; margin-bottom: 2rem;">Enter password to manage bets</p>
+                            <div class="form-group">
+                                <input type="password" id="password" class="input" placeholder="Enter admin password" onkeypress="if(event.key==='Enter') checkPassword()">
+                            </div>
+                            <button onclick="checkPassword()" class="btn btn-primary" style="width: 100%;">🔓 Login</button>
+                            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <p style="color: #8b92b0; font-size: 0.875rem;">Want to view bets only?</p>
+                                <a href="index.html" style="color: #9333ea; text-decoration: none; font-weight: 600;">Go to Public View →</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Get today's bets
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todaysBets = bets.filter(bet => {
+                const betDate = new Date(bet.timestamp);
+                betDate.setHours(0, 0, 0, 0);
+                return betDate.getTime() === today.getTime();
+            });
+
+            const todayStats = calculateStats(todaysBets);
+            const overallStats = calculateStats(bets);
+
+            let html = `
+                <div class="container">
+                    <div class="header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h1 class="title">👑 Admin Panel</h1>
+                                <p class="subtitle">Manage your betting tracker</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                                <span class="sync-status ${syncStatus === 'syncing' ? 'syncing' : syncStatus === 'error' ? 'error' : ''}">
+                                    ${syncStatus === 'syncing' ? '🔄 Syncing...' : syncStatus === 'error' ? '⚠️ Sync Error' : '✅ Synced'}
+                                </span>
+                                <button onclick="logout()" class="btn btn-danger">🚪 Logout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Today's Bets</div>
+                            <div class="stat-value">${todayStats.totalBets}</div>
+                        </div>
+                        <div class="stat-card yellow">
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value" style="color: #facc15;">${todayStats.pendingBets}</div>
+                        </div>
+                        <div class="stat-card ${parseFloat(todayStats.totalProfit) >= 0 ? 'green' : 'red'}">
+                            <div class="stat-label">Today's P/L</div>
+                            <div class="stat-value" style="color: ${parseFloat(todayStats.totalProfit) >= 0 ? '#22c55e' : '#ef4444'};">
+                                ${parseFloat(todayStats.totalProfit) >= 0 ? '+' : ''}₹${todayStats.totalProfit}
+                            </div>
+                        </div>
+                        <div class="stat-card ${parseFloat(overallStats.totalProfit) >= 0 ? 'green' : 'red'}">
+                            <div class="stat-label">Total P/L</div>
+                            <div class="stat-value" style="color: ${parseFloat(overallStats.totalProfit) >= 0 ? '#22c55e' : '#ef4444'};">
+                                ${parseFloat(overallStats.totalProfit) >= 0 ? '+' : ''}₹${overallStats.totalProfit}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Bet Form -->
+                    <div class="card">
+                        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem;">➕ Add New Bet</h2>
+                        <form id="addBetForm" onsubmit="handleAddBetSubmit(event)">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Sport</label>
+                                    <select id="sport" class="input" required>
+                                        <option value="cricket">🏏 Cricket</option>
+                                        <option value="tennis">🎾 Tennis</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Match</label>
+                                    <input type="text" id="match" class="input" placeholder="e.g., India vs Australia" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bet Description</label>
+                                    <input type="text" id="betDesc" class="input" placeholder="e.g., India to win" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Stake (₹)</label>
+                                    <input type="number" id="stake" class="input" step="0.01" placeholder="100" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Odds</label>
+                                    <input type="number" id="odds" class="input" step="0.01" placeholder="2.5" required>
+                                </div>
+                                <div class="form-group" style="display: flex; align-items: flex-end;">
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Add Bet</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- All Bets -->
+                    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">📋 All Bets (${bets.length})</h2>
+            `;
+
+            if (bets.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎯</div>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">No bets yet</h3>
+                        <p style="color: #8b92b0;">Add your first bet using the form above</p>
+                    </div>
+                `;
+            } else {
+                bets.forEach(bet => {
+                    const betDate = new Date(bet.timestamp);
+                    const isToday = betDate.toDateString() === today.toDateString();
+                    
+                    html += `
+                        <div class="bet-card" style="${isToday ? 'border: 2px solid rgba(147, 51, 234, 0.5);' : ''}">
+                            <div class="bet-header">
+                                <div style="flex: 1;">
+                                    <div class="bet-title">
+                                        ${bet.sport === 'cricket' ? '🏏' : '🎾'} ${bet.match}
+                                        ${isToday ? '<span class="badge" style="background: rgba(147, 51, 234, 0.2); color: #9333ea; margin-left: 0.5rem;">TODAY</span>' : ''}
+                                    </div>
+                                    <div style="color: #8b92b0; margin-bottom: 0.5rem;">${bet.bet}</div>
+                                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                        <span class="badge badge-${bet.sport}">${bet.sport}</span>
+                                        <span style="color: #8b92b0; font-size: 0.75rem;">${betDate.toLocaleDateString()} ${betDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                    </div>
+                                </div>
+                                <button onclick="deleteBetFromFirebase('${bet.id}')" class="delete-btn">✕</button>
+                            </div>
+                            <div class="bet-details">
+                                <div>
+                                    <div class="detail-label">STAKE</div>
+                                    <div class="detail-value">₹${bet.stake.toFixed(2)}</div>
+                                </div>
+                                <div>
+                                    <div class="detail-label">ODDS</div>
+                                    <div class="detail-value">${bet.odds}</div>
+                                </div>
+                                <div>
+                                    <div class="detail-label">POTENTIAL RETURN</div>
+                                    <div class="detail-value" style="color: #22c55e;">₹${bet.potentialReturn.toFixed(2)}</div>
+                                </div>
+                                <div>
+                                    <div class="detail-label">OUTCOME</div>
+                                    <select class="input" style="padding: 0.5rem; font-size: 0.875rem; color: ${bet.outcome === 'won' ? '#22c55e' : bet.outcome === 'lost' ? '#ef4444' : '#facc15'};" onchange="updateBetOutcomeInFirebase('${bet.id}', this.value)">
+                                        <option value="pending" ${bet.outcome === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                                        <option value="won" ${bet.outcome === 'won' ? 'selected' : ''}>✅ Won</option>
+                                        <option value="lost" ${bet.outcome === 'lost' ? 'selected' : ''}>❌ Lost</option>
+                                    </select>
+                                </div>
+                            </div>
+                            ${bet.profit !== 0 ? `
+                                <div style="margin-top: 1rem; text-align: right; font-size: 1.25rem; font-weight: 700; color: ${bet.profit > 0 ? '#22c55e' : '#ef4444'};">
+                                    ${bet.profit > 0 ? '+' : ''}₹${bet.profit.toFixed(2)}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            html += '</div>';
+            root.innerHTML = html;
+        }
+
+        function handleAddBetSubmit(event) {
+            event.preventDefault();
+            const formData = {
+                sport: document.getElementById('sport').value,
+                match: document.getElementById('match').value,
+                bet: document.getElementById('betDesc').value,
+                stake: document.getElementById('stake').value,
+                odds: document.getElementById('odds').value
+            };
+            addBetToFirebase(formData);
+        }
+
+        // Initialize
+        render();
+    </script>
+</body>
+</html>
