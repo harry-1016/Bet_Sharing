@@ -625,6 +625,572 @@
 
                     // Success/Error Messages
                     successMsg && h('div', { className: 'alert alert-success' }, successMsg),
+                    errorMsg && h('div', { className: 'alert alert-error' }, errorMsg            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card.green {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .stat-card.red {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .stat-card.yellow {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(234, 179, 8, 0.1) 100%);
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+        
+        .stat-label {
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .btn-success:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-purple {
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            color: #9333ea;
+        }
+        
+        .btn-purple:hover {
+            background: rgba(147, 51, 234, 0.3);
+        }
+        
+        .btn-gray {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-gray:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        select.input {
+            cursor: pointer;
+        }
+        
+        label {
+            display: block;
+            color: #8b92b0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
+        .gap-3 {
+            gap: 1rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .bet-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .bet-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .bet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .bet-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bet-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+        
+        .bet-detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            color: #8b92b0;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-cricket {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        
+        .badge-tennis {
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+        }
+        
+        .badge-pending {
+            background: rgba(250, 204, 21, 0.15);
+            color: #facc15;
+        }
+        
+        .badge-won {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        
+        .badge-lost {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        
+        .delete-btn {
+            padding: 0.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 0.625rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: capitalize;
+            transition: all 0.2s;
+        }
+        
+        .filter-tab.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            border: none;
+        }
+        
+        .empty-state {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal {
+            background: #1a1f2e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8b92b0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.75rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .bet-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- React and ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <script>
+        (function() {
+            const { useState, useEffect } = React;
+            const h = React.createElement;
+
+            // Password configuration (change this line to update password)
+            const DEFAULT_PASSWORD = 'admin123';
+
+            function App() {
+                const [bets, setBets] = useState([]);
+                const [isAuthenticated, setIsAuthenticated] = useState(false);
+                const [password, setPassword] = useState('');
+                const [showAddBet, setShowAddBet] = useState(false);
+                const [showStats, setShowStats] = useState(false);
+                const [statsFilter, setStatsFilter] = useState('all');
+                const [successMsg, setSuccessMsg] = useState('');
+                const [errorMsg, setErrorMsg] = useState('');
+                const [newBet, setNewBet] = useState({
+                    sport: 'cricket',
+                    match: '',
+                    bet: '',
+                    stake: '',
+                    odds: ''
+                });
+
+                // Load bets from localStorage
+                useEffect(() => {
+                    const saved = localStorage.getItem('bets');
+                    if (saved) {
+                        setBets(JSON.parse(saved));
+                    }
+                }, []);
+
+                // Save bets to localStorage
+                useEffect(() => {
+                    localStorage.setItem('bets', JSON.stringify(bets));
+                }, [bets]);
+
+                const showSuccess = (msg) => {
+                    setSuccessMsg(msg);
+                    setTimeout(() => setSuccessMsg(''), 3000);
+                };
+
+                const showError = (msg) => {
+                    setErrorMsg(msg);
+                    setTimeout(() => setErrorMsg(''), 3000);
+                };
+
+                const handleLogin = (e) => {
+                    e.preventDefault();
+                    if (password === DEFAULT_PASSWORD) {
+                        setIsAuthenticated(true);
+                        setPassword('');
+                        showSuccess('Login successful!');
+                    } else {
+                        showError('Incorrect password');
+                    }
+                };
+
+                const handleAddBet = (e) => {
+                    e.preventDefault();
+                    const bet = {
+                        id: Date.now(),
+                        ...newBet,
+                        stake: parseFloat(newBet.stake),
+                        odds: parseFloat(newBet.odds),
+                        potentialReturn: parseFloat(newBet.stake) * parseFloat(newBet.odds),
+                        outcome: 'pending',
+                        profit: 0,
+                        date: new Date().toISOString().split('T')[0],
+                        createdAt: new Date().toISOString()
+                    };
+                    setBets([bet, ...bets]);
+                    setNewBet({ sport: 'cricket', match: '', bet: '', stake: '', odds: '' });
+                    setShowAddBet(false);
+                    showSuccess('Bet added successfully!');
+                };
+
+                const updateBetOutcome = (id, outcome) => {
+                    setBets(bets.map(bet => {
+                        if (bet.id === id) {
+                            const profit = outcome === 'won' 
+                                ? bet.potentialReturn - bet.stake 
+                                : outcome === 'lost' 
+                                ? -bet.stake 
+                                : 0;
+                            return { ...bet, outcome, profit };
+                        }
+                        return bet;
+                    }));
+                    showSuccess(`Bet marked as ${outcome}`);
+                };
+
+                const deleteBet = (id) => {
+                    if (confirm('Are you sure you want to delete this bet?')) {
+                        setBets(bets.filter(bet => bet.id !== id));
+                        showSuccess('Bet deleted');
+                    }
+                };
+
+                // Get today's bets
+                const today = new Date().toISOString().split('T')[0];
+                const todaysBets = bets.filter(bet => bet.date === today);
+
+                // Calculate statistics
+                const calculateStats = (betsList) => {
+                    const totalBets = betsList.length;
+                    const wonBets = betsList.filter(b => b.outcome === 'won').length;
+                    const lostBets = betsList.filter(b => b.outcome === 'lost').length;
+                    const pendingBets = betsList.filter(b => b.outcome === 'pending').length;
+                    const totalStake = betsList.reduce((sum, b) => sum + b.stake, 0).toFixed(2);
+                    const totalProfit = betsList.reduce((sum, b) => sum + b.profit, 0).toFixed(2);
+                    const winRate = totalBets > 0 ? ((wonBets / (wonBets + lostBets)) * 100 || 0).toFixed(1) : '0.0';
+                    const roi = parseFloat(totalStake) > 0 ? ((parseFloat(totalProfit) / parseFloat(totalStake)) * 100).toFixed(1) : '0.0';
+
+                    return {
+                        totalBets,
+                        wonBets,
+                        lostBets,
+                        pendingBets,
+                        totalStake,
+                        totalProfit,
+                        winRate,
+                        roi
+                    };
+                };
+
+                // Get stats for different time periods
+                const getFilteredBets = (filter) => {
+                    const now = new Date();
+                    if (filter === 'week') {
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        return bets.filter(b => new Date(b.date) >= weekAgo);
+                    } else if (filter === 'month') {
+                        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        return bets.filter(b => new Date(b.date) >= monthAgo);
+                    }
+                    return bets;
+                };
+
+                const filteredBets = getFilteredBets(statsFilter);
+                const stats = calculateStats(filteredBets);
+                const cricketStats = calculateStats(filteredBets.filter(b => b.sport === 'cricket'));
+                const tennisStats = calculateStats(filteredBets.filter(b => b.sport === 'tennis'));
+
+                return h('div', { className: 'container' },
+                    h('div', { className: 'header' },
+                        h('h1', { className: 'title' }, '🎯 Betting Tracker'),
+                        h('p', { className: 'subtitle' }, 'Track your cricket and tennis bets')
+                    ),
+
+                    // Success/Error Messages
+                    successMsg && h('div', { className: 'alert alert-success' }, successMsg),
                     errorMsg && h('div', { className: 'alert alert-error' }, errorMsg),
 
                     // Creator Login/Controls
