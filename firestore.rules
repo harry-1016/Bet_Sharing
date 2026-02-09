@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Bets collection
+    // Read: Anyone can read (public view)
+    // Write: Only authenticated users (admin)
+    match /bets/{betId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // Notifications collection
+    // Read: Anyone can read (public view)
+    // Write: Only authenticated users (admin)
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // FCM tokens collection
+    // Read: Only authenticated (admin needs to read for sending)
+    // Write: Anyone (users register their tokens)
+    match /fcm_tokens/{tokenId} {
+      allow read: if isAuthenticated();
+      allow write: if true;
+      // Auto-delete tokens older than 90 days
+      allow delete: if isAuthenticated() || 
+        resource.data.timestamp < timestamp.date(2024, 1, 1);
+    }
+    
+    // Push queue collection
+    // Read: Only Cloud Functions (denied to clients)
+    // Write: Only authenticated (admin)
+    // Cloud Function will process and delete
+    match /push_queue/{queueId} {
+      allow read: if false;
+      allow write: if isAuthenticated();
+    }
+  }
+}
