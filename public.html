@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View cricket and tennis bets">
+    <meta name="theme-color" content="#0a0e1a">
+    <link rel="manifest" href="./manifest.json">
+    <title>Betting Tracker</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: white;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            color: #8b92b0;
+        }
+
+        /* Notification Permission Banner */
+        .notification-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .notification-banner-content {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .notification-banner-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-banner-text {
+            color: #8b92b0;
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Notifications Section */
+        .notifications-section {
+            margin-bottom: 2rem;
+        }
+        
+        .notification-card {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .notification-icon {
+            font-size: 1.5rem;
+        }
+        
+        .notification-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            flex: 1;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: #8b92b0;
+        }
+        
+        .notification-message {
+            color: #e5e7eb;
+            line-height: 1.6;
+            margin-left: 2.25rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .report-card {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .report-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #8b92b0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .bet-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .bet-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bet-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .detail-label {
+            color: #8b92b0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .detail-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 0.5rem;
+        }
+        
+        .badge-cricket {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .badge-tennis {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .badge-pending {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+        }
+        
+        .badge-won {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .badge-lost {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .badge-void {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #8b92b0;
+        }
+        
+        .sync-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .sync-status.synced {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .sync-status.syncing {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+        }
+        
+        .sync-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkmo-yTbEd8LE6XtAPsJkmstLos7wlUew",
+            authDomain: "bet-sharing.firebaseapp.com",
+            projectId: "bet-sharing",
+            storageBucket: "bet-sharing.firebasestorage.app",
+            messagingSenderId: "21069245479",
+            appId: "1:21069245479:web:a851ffb095ddb1b93a7202"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        let messaging = null;
+        let firebaseInitialized = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            firebaseInitialized = true;
+            console.log('✅ Firebase initialized');
+        } catch (error) {
+            console.error('❌ Firebase initialization failed:', error);
+        }
+
+        // State
+        let bets = [];
+        let notifications = [];
+        let syncStatus = 'syncing';
+        let notificationPermission = 'default';
+        let showNotificationBanner = false;
+        let fcmToken = null;
+
+        // Check notification permission on load
+        if ('Notification' in window) {
+            notificationPermission = Notification.permission;
+            showNotificationBanner = (notificationPermission === 'default');
+        }
+
+        // Initialize FCM
+        async function initializeFCM() {
+            if (!firebaseInitialized) return;
+
+            try {
+                if (firebase.messaging.isSupported()) {
+                    messaging = firebase.messaging();
+                    
+                    // Handle foreground messages
+                    messaging.onMessage((payload) => {
+                        console.log('Message received in foreground:', payload);
+                        
+                        const notificationTitle = payload.notification?.title || payload.data?.title || 'Betting Tracker';
+                        const notificationOptions = {
+                            body: payload.notification?.body || payload.data?.message || 'New notification',
+                            icon: './icon-192.png',
+                            badge: './icon-192.png',
+                            tag: 'bet-notification',
+                            requireInteraction: false
+                        };
+
+                        // Show notification
+                        if (Notification.permission === 'granted') {
+                            new Notification(notificationTitle, notificationOptions);
+                        }
+                    });
+
+                    console.log('✅ FCM initialized');
+                } else {
+                    console.log('⚠️ FCM not supported on this browser');
+                }
+            } catch (error) {
+                console.error('❌ FCM initialization error:', error);
+            }
+        }
+
+        // Request notification permission
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                alert('This browser does not support notifications');
+                return;
+            }
+
+            if (!messaging) {
+                alert('Messaging not supported on this browser');
+                return;
+            }
+
+            try {
+                // Register service worker first
+                const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+                console.log('Service Worker registered:', registration);
+
+                // Request permission
+                const permission = await Notification.requestPermission();
+                console.log('Notification permission:', permission);
+
+                if (permission === 'granted') {
+                    // Get FCM token
+                    const token = await messaging.getToken({
+                        vapidKey: 'BHw_HQlVVsC5xEPwvLHCxZ_pHrNhPdVe_LphZNUqkH7FMD_5jPqJKE0_6lVxO8FZwIH5vMmCvVyKvuRJlx5KbNE',
+                        serviceWorkerRegistration: registration
+                    });
+                    
+                    fcmToken = token;
+                    console.log('FCM Token:', token);
+
+                    // Save token to Firestore
+                    await db.collection('fcm_tokens').doc(token).set({
+                        token: token,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        userAgent: navigator.userAgent
+                    });
+
+                    notificationPermission = 'granted';
+                    showNotificationBanner = false;
+                    
+                    // Show success notification
+                    new Notification('Notifications Enabled! 🎉', {
+                        body: 'You will now receive push notifications for new bets and updates',
+                        icon: './icon-192.png'
+                    });
+                } else {
+                    notificationPermission = 'denied';
+                    showNotificationBanner = false;
+                    alert('Notifications were denied. You can enable them in your browser settings.');
+                }
+
+                render();
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+                alert('Error setting up notifications: ' + error.message);
+            }
+        }
+
+        // Dismiss notification banner
+        function dismissNotificationBanner() {
+            showNotificationBanner = false;
+            localStorage.setItem('notificationBannerDismissed', 'true');
+            render();
+        }
+
+        // Check if banner was dismissed before
+        const bannerDismissed = localStorage.getItem('notificationBannerDismissed');
+        if (bannerDismissed && notificationPermission === 'default') {
+            showNotificationBanner = false;
+        }
+
+        // Load notifications from Firebase
+        function loadNotifications() {
+            if (!firebaseInitialized || !db) return;
+
+            db.collection('notifications')
+                .orderBy('timestamp', 'desc')
+                .limit(10)
+                .onSnapshot((snapshot) => {
+                    notifications = [];
+                    
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        notifications.push({
+                            id: doc.id,
+                            title: data.title,
+                            message: data.message,
+                            type: data.type || 'info',
+                            timestamp: data.timestamp?.toDate() || new Date()
+                        });
+                    });
+                    
+                    render();
+                }, (error) => {
+                    console.error('Error loading notifications:', error);
+                });
+        }
+
+        // Load bets from Firebase
+        function loadBets() {
+            if (!firebaseInitialized || !db) {
+                syncStatus = 'error';
+                render();
+                return;
+            }
+
+            db.collection('bets')
+                .orderBy('timestamp', 'desc')
+                .onSnapshot((snapshot) => {
+                    bets = [];
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const betDate = data.timestamp?.toDate() || new Date();
+                        betDate.setHours(0, 0, 0, 0);
+                        
+                        // Only show today's bets
+                        if (betDate.getTime() === today.getTime()) {
+                            bets.push({
+                                id: doc.id,
+                                sport: data.sport,
+                                match: data.match,
+                                bet: data.bet,
+                                stake: parseFloat(data.stake),
+                                odds: parseFloat(data.odds),
+                                potentialReturn: parseFloat(data.potentialReturn),
+                                outcome: data.outcome || 'pending',
+                                profit: parseFloat(data.profit || 0),
+                                timestamp: data.timestamp?.toDate() || new Date()
+                            });
+                        }
+                    });
+                    
+                    syncStatus = 'synced';
+                    render();
+                }, (error) => {
+                    console.error('Error loading bets:', error);
+                    syncStatus = 'error';
+                    render();
+                });
+        }
+
+        // Calculate daily report
+        function calculateDailyReport() {
+            const totalBets = bets.length;
+            const wonBets = bets.filter(b => b.outcome === 'won').length;
+            const lostBets = bets.filter(b => b.outcome === 'lost').length;
+            const voidBets = bets.filter(b => b.outcome === 'void').length;
+            const pendingBets = bets.filter(b => b.outcome === 'pending').length;
+            const totalStake = bets.reduce((sum, b) => sum + b.stake, 0);
+            const totalProfit = bets.reduce((sum, b) => sum + b.profit, 0);
+            const winRate = (wonBets + lostBets) > 0 ? ((wonBets / (wonBets + lostBets)) * 100) : 0;
+            
+            return {
+                totalBets,
+                wonBets,
+                lostBets,
+                voidBets,
+                pendingBets,
+                totalStake,
+                totalProfit,
+                winRate
+            };
+        }
+
+        // Format time ago
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
+        }
+
+        // Get notification icon
+        function getNotificationIcon(type) {
+            const icons = {
+                'info': '📢',
+                'bet': '🎯',
+                'win': '🎉',
+                'loss': '😢',
+                'update': '🔄',
+                'warning': '⚠️'
+            };
+            return icons[type] || '📬';
+        }
+
+        // Render UI
+        function render() {
+            const root = document.getElementById('root');
+            
+            let statusBadge = '';
+            if (syncStatus === 'synced') {
+                statusBadge = '<div class="sync-status synced">🟢 Live</div>';
+            } else if (syncStatus === 'syncing') {
+                statusBadge = '<div class="sync-status syncing">🟡 Connecting...</div>';
+            } else {
+                statusBadge = '<div class="sync-status error">🔴 Connection Error</div>';
+            }
+            
+            const report = calculateDailyReport();
+            
+            let content = `
+                <div class="container">
+                    <div class="header">
+                        <h1 class="title">Harry-Bets</h1>
+                        <p class="subtitle">${new Date().toLocaleDateString('en-IN', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</p>
+                    </div>
+                    
+                    ${statusBadge}
+            `;
+
+            // Notification permission banner
+            if (showNotificationBanner && notificationPermission === 'default') {
+                content += `
+                    <div class="notification-banner">
+                        <div class="notification-banner-content">
+                            <div class="notification-banner-title">🔔 Enable Push Notifications</div>
+                            <div class="notification-banner-text">Get instant alerts for new bets and updates</div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary" onclick="requestNotificationPermission()">Enable</button>
+                            <button class="btn btn-secondary" onclick="dismissNotificationBanner()">Later</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Notifications Section
+            if (notifications.length > 0) {
+                content += `
+                    <div class="notifications-section">
+                        <h2 class="section-title">📬 Messages</h2>
+                `;
+                
+                notifications.forEach(notif => {
+                    content += `
+                        <div class="notification-card">
+                            <div class="notification-header">
+                                <span class="notification-icon">${getNotificationIcon(notif.type)}</span>
+                                <span class="notification-title">${notif.title}</span>
+                                <span class="notification-time">${timeAgo(notif.timestamp)}</span>
+                            </div>
+                            <div class="notification-message">${notif.message}</div>
+                        </div>
+                    `;
+                });
+                
+                content += '</div>';
+            }
+            
+            // Bets Section
+            content += '<h2 class="section-title">🎲 Active Bets</h2>';
+            
+            if (bets.length === 0) {
+                content += `
+                    <div class="empty-state">
+                        <div style="font-size: 4rem;">📭</div>
+                        <h2 style="margin-top: 1rem;">No bets today</h2>
+                        <p style="margin-top: 0.5rem;">Check back later for updates</p>
+                    </div>
+                `;
+            } else {
+                bets.forEach(bet => {
+                    const sportBadge = bet.sport === 'Cricket' ? 'badge-cricket' : 'badge-tennis';
+                    const outcomeBadge = `badge-${bet.outcome}`;
+                    
+                    content += `
+                        <div class="bet-card">
+                            <div>
+                                <span class="badge ${sportBadge}">${bet.sport}</span>
+                                <span class="badge ${outcomeBadge}">${bet.outcome}</span>
+                            </div>
+                            <div class="bet-title">${bet.match}</div>
+                            <div style="color: #8b92b0; margin-bottom: 1rem;">${bet.bet}</div>
+                            
+                            <div class="bet-details">
+                                <div>
+                                    <div class="detail-label">Stake</div>
+                                    <div class="detail-value">₹${bet.stake.toLocaleString()}</div>
+                                </div>
+                                <div>
+                                    <div class="detail-label">Odds</div>
+                                    <div class="detail-value">${bet.odds}</div>
+                                </div>
+                                <div>
+                                    <div class="detail-label">Potential Return</div>
+                                    <div class="detail-value">₹${bet.potentialReturn.toLocaleString()}</div>
+                                </div>
+                                ${bet.outcome !== 'pending' ? `
+                                <div>
+                                    <div class="detail-label">Profit/Loss</div>
+                                    <div class="detail-value" style="color: ${bet.profit >= 0 ? '#22c55e' : '#ef4444'}">
+                                        ${bet.profit >= 0 ? '+' : ''}₹${bet.profit.toLocaleString()}
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Add report at the bottom
+            content += `
+                <div class="report-card">
+                    <div class="report-title">📊 Today's Report</div>
+                    <div class="report-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Total Bets</div>
+                            <div class="stat-value">${report.totalBets}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Won</div>
+                            <div class="stat-value" style="color: #22c55e">${report.wonBets}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Lost</div>
+                            <div class="stat-value" style="color: #ef4444">${report.lostBets}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Void</div>
+                            <div class="stat-value" style="color: #9ca3af">${report.voidBets}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value" style="color: #facc15">${report.pendingBets}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Win Rate</div>
+                            <div class="stat-value">${report.winRate.toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Total P/L</div>
+                            <div class="stat-value" style="color: ${report.totalProfit >= 0 ? '#22c55e' : '#ef4444'}">
+                                ${report.totalProfit >= 0 ? '+' : ''}₹${report.totalProfit.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            content += '</div>';
+            root.innerHTML = content;
+        }
+
+        // Initialize
+        render();
+        if (firebaseInitialized) {
+            loadBets();
+            loadNotifications();
+            initializeFCM();
+        }
+    </script>
+</body>
+</html>
