@@ -16,58 +16,336 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
 
 <style>
-    /* Copy all styles from original public.html - keeping same CSS */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0e1a; color: white; min-height: 100vh; padding: 1rem; }
-    .container { max-width: 1200px; margin: 0 auto; }
-    .header { background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; }
-    .title { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
-    .subtitle { color: #8b92b0; }
-    .notification-banner { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .notification-banner-content { flex: 1; min-width: 200px; }
-    .notification-banner-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem; }
-    .notification-banner-text { color: #8b92b0; font-size: 0.875rem; }
-    .btn { padding: 0.75rem 1.5rem; border-radius: 12px; border: none; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s; }
-    .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; }
-    .btn-primary:hover { transform: translateY(-2px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
-    .notifications-section { margin-bottom: 2rem; }
-    .notification-card { background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%); border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .notification-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
-    .notification-icon { font-size: 1.5rem; }
-    .notification-title { font-size: 1.125rem; font-weight: 700; flex: 1; }
-    .notification-time { font-size: 0.75rem; color: #8b92b0; }
-    .notification-message { color: #e5e7eb; line-height: 1.6; margin-left: 2.25rem; }
-    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .report-card { background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%); border: 1px solid rgba(147, 51, 234, 0.2); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; }
-    .report-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: #fff; }
-    .report-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
-    .stat-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 1rem; text-align: center; }
-    .stat-label { color: #8b92b0; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .stat-value { font-size: 1.5rem; font-weight: 700; }
-    .bet-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
-    .bet-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .bet-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem; }
-    .detail-label { color: #8b92b0; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .detail-value { font-size: 1.125rem; font-weight: 700; margin-top: 0.25rem; }
-    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-right: 0.5rem; }
-    .badge-cricket { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-    .badge-tennis { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-    .badge-pending { background: rgba(250, 204, 21, 0.2); color: #facc15; }
-    .badge-won { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-    .badge-lost { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-    .badge-void { background: rgba(156, 163, 175, 0.2); color: #9ca3af; }
-    .empty-state { text-align: center; padding: 3rem; color: #8b92b0; }
-    .sync-status { display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; }
-    .sync-status.synced { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-    .sync-status.syncing { background: rgba(250, 204, 21, 0.2); color: #facc15; }
-    .sync-status.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
     
-    /* Diagnostic panel */
-    .diagnostic-panel { background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; font-size: 0.875rem; }
-    .diagnostic-panel button { margin-top: 0.5rem; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0a0e1a;
+        color: white;
+        min-height: 100vh;
+        padding: 1rem;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .header {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(123, 47, 247, 0.1) 100%);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #00d4ff 0%, #7b2ff7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .subtitle {
+        color: #8b92b0;
+    }
+
+    /* Notification Permission Banner */
+    .notification-banner {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .notification-banner-content {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .notification-banner-title {
+        font-weight: 700;
+        font-size: 1.125rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .notification-banner-text {
+        color: #8b92b0;
+        font-size: 0.875rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Debug Info */
+    .debug-info {
+        background: rgba(251, 191, 36, 0.1);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        font-family: monospace;
+        font-size: 0.875rem;
+    }
+    
+    .debug-info.success {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
+    }
+    
+    .debug-info.error {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Notifications Section */
+    .notifications-section {
+        margin-bottom: 2rem;
+    }
+    
+    .notification-card {
+        background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .notification-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .notification-icon {
+        font-size: 1.5rem;
+    }
+    
+    .notification-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        flex: 1;
+    }
+    
+    .notification-time {
+        font-size: 0.75rem;
+        color: #8b92b0;
+    }
+    
+    .notification-message {
+        color: #e5e7eb;
+        line-height: 1.6;
+        margin-left: 2.25rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .report-card {
+        background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .report-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+    }
+    
+    .report-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+    
+    .stat-box {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .stat-label {
+        color: #8b92b0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .bet-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .bet-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .bet-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .detail-label {
+        color: #8b92b0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .detail-value {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin-top: 0.25rem;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-right: 0.5rem;
+    }
+    
+    .badge-cricket {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+    
+    .badge-tennis {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+    
+    .badge-pending {
+        background: rgba(250, 204, 21, 0.2);
+        color: #facc15;
+    }
+    
+    .badge-won {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+    
+    .badge-lost {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+    
+    .badge-void {
+        background: rgba(156, 163, 175, 0.2);
+        color: #9ca3af;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #8b92b0;
+    }
+    
+    .sync-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .sync-status.synced {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+    
+    .sync-status.syncing {
+        background: rgba(250, 204, 21, 0.2);
+        color: #facc15;
+    }
+    
+    .sync-status.error {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
 </style>
 ```
 
@@ -92,15 +370,6 @@
     let messaging = null;
     let firebaseInitialized = false;
 
-    try {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        firebaseInitialized = true;
-        console.log('✅ Firebase initialized');
-    } catch (error) {
-        console.error('❌ Firebase initialization failed:', error);
-    }
-
     // State
     let bets = [];
     let notifications = [];
@@ -108,169 +377,185 @@
     let notificationPermission = 'default';
     let showNotificationBanner = false;
     let fcmToken = null;
-    let showDiagnostics = false;
+    let debugInfo = '';
+
+    // Debug logging
+    function debugLog(message, isError = false) {
+        console.log(`[FCM Debug] ${message}`);
+        debugInfo += `${new Date().toLocaleTimeString()}: ${message}\n`;
+        if (isError) {
+            console.error(message);
+        }
+    }
+
+    try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        firebaseInitialized = true;
+        debugLog('✅ Firebase initialized');
+    } catch (error) {
+        debugLog(`❌ Firebase initialization failed: ${error.message}`, true);
+    }
 
     // Check notification permission on load
     if ('Notification' in window) {
         notificationPermission = Notification.permission;
         showNotificationBanner = (notificationPermission === 'default');
+        debugLog(`Notification permission: ${notificationPermission}`);
+    } else {
+        debugLog('❌ Notifications not supported in this browser', true);
     }
 
-    // Initialize FCM
+    // Initialize FCM with improved error handling
     async function initializeFCM() {
-        if (!firebaseInitialized) return;
-
-        try {
-            if (firebase.messaging.isSupported()) {
-                messaging = firebase.messaging();
-                console.log('✅ FCM is supported');
-                
-                // Handle foreground messages
-                messaging.onMessage((payload) => {
-                    console.log('📨 Message received in foreground:', payload);
-                    
-                    const notificationTitle = payload.notification?.title || payload.data?.title || 'Betting Tracker';
-                    const notificationOptions = {
-                        body: payload.notification?.body || payload.data?.message || 'New notification',
-                        icon: './icon-192.png',
-                        badge: './icon-192.png',
-                        tag: 'bet-notification',
-                        requireInteraction: false
-                    };
-
-                    // Show notification if permission granted
-                    if (Notification.permission === 'granted') {
-                        new Notification(notificationTitle, notificationOptions);
-                    }
-                });
-
-                console.log('✅ FCM initialized and ready');
-            } else {
-                console.log('⚠️ FCM not supported on this browser - in-app notifications only');
-            }
-        } catch (error) {
-            console.error('❌ FCM initialization error:', error);
-            console.log('Continuing with in-app notifications only');
-        }
-    }
-
-    // IMPROVED: Request notification permission with better error handling
-    async function requestNotificationPermission() {
-        console.log('🔔 Starting notification permission request...');
-        
-        if (!('Notification' in window)) {
-            alert('This browser does not support notifications');
+        if (!firebaseInitialized) {
+            debugLog('❌ Cannot initialize FCM - Firebase not initialized', true);
             return;
         }
 
         try {
+            // Check if FCM is supported
+            if (!firebase.messaging.isSupported()) {
+                debugLog('⚠️ FCM not supported on this browser - using in-app only');
+                return;
+            }
+
+            messaging = firebase.messaging();
+            debugLog('✅ FCM Messaging object created');
+            
+            // Setup foreground message handler - THIS IS CRITICAL!
+            messaging.onMessage((payload) => {
+                debugLog('📬 Foreground message received!');
+                debugLog(`Title: ${payload.notification?.title}`);
+                debugLog(`Body: ${payload.notification?.body}`);
+                
+                const notificationTitle = payload.notification?.title || payload.data?.title || 'Betting Tracker';
+                const notificationOptions = {
+                    body: payload.notification?.body || payload.data?.message || 'New notification',
+                    icon: './icon-192.png',
+                    badge: './icon-192.png',
+                    tag: 'bet-notification',
+                    requireInteraction: false,
+                    vibrate: [200, 100, 200],
+                    data: payload.data
+                };
+
+                // FORCE show notification even in foreground
+                if (Notification.permission === 'granted') {
+                    debugLog('✅ Showing browser notification');
+                    const notification = new Notification(notificationTitle, notificationOptions);
+                    
+                    notification.onclick = function(event) {
+                        event.preventDefault();
+                        window.focus();
+                        notification.close();
+                    };
+                } else {
+                    debugLog(`⚠️ Cannot show notification - permission: ${Notification.permission}`);
+                }
+            });
+
+            debugLog('✅ FCM foreground handler registered');
+            
+        } catch (error) {
+            debugLog(`❌ FCM initialization error: ${error.message}`, true);
+            console.error('Full FCM error:', error);
+        }
+    }
+
+    // Request notification permission with better feedback
+    async function requestNotificationPermission() {
+        if (!('Notification' in window)) {
+            alert('This browser does not support notifications');
+            debugLog('❌ Notifications not supported', true);
+            return;
+        }
+
+        try {
+            debugLog('🔔 Requesting notification permission...');
+            
             // Request permission first
-            console.log('📋 Requesting permission...');
             const permission = await Notification.requestPermission();
-            console.log('📋 Permission result:', permission);
+            debugLog(`Permission result: ${permission}`);
 
             if (permission === 'granted') {
                 notificationPermission = 'granted';
                 showNotificationBanner = false;
+                debugLog('✅ Permission granted!');
                 
-                console.log('✅ Permission granted, setting up FCM...');
+                // Show immediate test notification
+                new Notification('Notifications Enabled! 🎉', {
+                    body: 'You will now receive betting updates',
+                    icon: './icon-192.png',
+                    tag: 'permission-granted'
+                });
                 
                 // If messaging is available, try to get FCM token
                 if (messaging) {
                     try {
+                        debugLog('📝 Registering service worker...');
+                        
                         // Register service worker
-                        console.log('🔧 Registering service worker...');
                         const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-                        console.log('✅ Service Worker registered:', registration);
+                        debugLog('✅ Service Worker registered');
+                        debugLog(`SW scope: ${registration.scope}`);
 
                         // Wait for service worker to be ready
-                        console.log('⏳ Waiting for service worker...');
                         await navigator.serviceWorker.ready;
-                        console.log('✅ Service worker ready');
+                        debugLog('✅ Service Worker ready');
 
-                        // Try to get FCM token (without VAPID first, then with if needed)
-                        console.log('🎫 Getting FCM token...');
-                        let token;
-                        
-                        try {
-                            // Try WITHOUT VAPID first
-                            console.log('   Attempting without VAPID key...');
-                            token = await messaging.getToken({
-                                serviceWorkerRegistration: registration
-                            });
-                            console.log('✅ Token obtained without VAPID');
-                        } catch (noVapidError) {
-                            console.log('⚠️  Without VAPID failed:', noVapidError.message);
-                            console.log('   This is expected - app will still work');
-                            console.log('   For production, add VAPID key from Firebase Console');
-                            // Token might still be null, but that's OK for this error
-                        }
+                        // Get FCM token
+                        debugLog('🎫 Getting FCM token...');
+                        const token = await messaging.getToken({
+                            serviceWorkerRegistration: registration
+                        });
                         
                         if (token) {
                             fcmToken = token;
-                            console.log('✅ FCM Token obtained:', token.substring(0, 30) + '...');
-                            console.log('   Full token length:', token.length, 'characters');
+                            debugLog('✅ FCM Token obtained!');
+                            debugLog(`Token: ${token.substring(0, 50)}...`);
 
                             // Save token to Firestore
-                            console.log('💾 Saving token to Firestore...');
                             if (db) {
+                                debugLog('💾 Saving token to Firestore...');
                                 await db.collection('fcm_tokens').doc(token).set({
                                     token: token,
                                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                     userAgent: navigator.userAgent,
-                                    platform: navigator.platform,
-                                    registered: new Date().toISOString()
+                                    enabled: true
                                 });
-                                console.log('✅ Token saved to Firestore!');
+                                debugLog('✅ Token saved to Firestore');
                                 
-                                // Verify it was saved
-                                const savedDoc = await db.collection('fcm_tokens').doc(token).get();
-                                if (savedDoc.exists) {
-                                    console.log('✅ VERIFIED: Token exists in Firestore');
-                                    console.log('   Data:', savedDoc.data());
-                                } else {
-                                    console.error('❌ WARNING: Token NOT found after saving!');
-                                }
-                            } else {
-                                console.error('❌ Database not initialized - cannot save token');
+                                // Show success notification
+                                new Notification('Push Notifications Ready! 🚀', {
+                                    body: 'You will receive notifications even when this tab is closed',
+                                    icon: './icon-192.png',
+                                    tag: 'fcm-ready'
+                                });
                             }
-
-                            // Show success notification
-                            console.log('🎉 Showing success notification...');
-                            new Notification('Notifications Enabled! 🎉', {
-                                body: 'You will now receive notifications for new bets and updates',
-                                icon: './icon-192.png'
-                            });
                         } else {
-                            console.warn('⚠️  No FCM token obtained');
-                            console.log('In-app notifications will still work, but no background push');
+                            debugLog('⚠️ No FCM token received');
                         }
-                        
                     } catch (tokenError) {
-                        console.error('❌ FCM token error:', tokenError);
-                        console.error('   Error name:', tokenError.name);
-                        console.error('   Error message:', tokenError.message);
-                        console.error('   Error code:', tokenError.code);
-                        alert('Could not set up push notifications: ' + tokenError.message + '\n\nIn-app messages will still work.\n\nFor help, press F12 and check Console.');
+                        debugLog(`⚠️ Could not get FCM token: ${tokenError.message}`);
+                        console.error('Token error:', tokenError);
+                        // Still useful for in-app notifications
                     }
-                } else {
-                    console.warn('⚠️  Messaging not available - push not supported on this browser');
-                    alert('Push notifications not supported in this browser.\n\nIn-app messages will still work!');
                 }
             } else if (permission === 'denied') {
-                console.warn('❌ User denied notification permission');
                 notificationPermission = 'denied';
                 showNotificationBanner = false;
-                alert('Notifications were denied.\n\nTo enable:\n1. Click the lock icon 🔒 in the address bar\n2. Find "Notifications"\n3. Change to "Allow"\n4. Refresh the page');
+                debugLog('❌ Permission denied');
+                alert('Notifications were denied. You can enable them in your browser settings.');
             } else {
-                console.log('ℹ️  Permission request dismissed');
+                debugLog('⚠️ Permission prompt dismissed');
             }
 
             render();
         } catch (error) {
-            console.error('❌ Notification setup error:', error);
-            console.error('   Stack:', error.stack);
-            alert('Error setting up notifications: ' + error.message);
+            debugLog(`❌ Error requesting permission: ${error.message}`, true);
+            console.error('Permission error:', error);
+            alert('Error setting up notifications. In-app messages will still work.');
         }
     }
 
@@ -286,129 +571,6 @@
     if (bannerDismissed && notificationPermission === 'default') {
         showNotificationBanner = false;
     }
-
-    // NEW: Diagnostic function
-    async function runDiagnostics() {
-        console.log('='.repeat(70));
-        console.log('🔍 PUSH NOTIFICATION DIAGNOSTICS');
-        console.log('='.repeat(70));
-        
-        const results = [];
-        
-        // Check browser support
-        results.push('📱 BROWSER SUPPORT:');
-        results.push('   Notification API: ' + ('Notification' in window ? '✅ Supported' : '❌ Not supported'));
-        results.push('   Service Workers: ' + ('serviceWorker' in navigator ? '✅ Supported' : '❌ Not supported'));
-        results.push('   Push API: ' + ('PushManager' in window ? '✅ Supported' : '❌ Not supported'));
-        results.push('   FCM Supported: ' + (messaging ? '✅ Yes' : '❌ No'));
-        
-        // Check permissions
-        results.push('\n🔐 PERMISSIONS:');
-        results.push('   Notification permission: ' + Notification.permission);
-        if (Notification.permission === 'granted') {
-            results.push('   ✅ Notifications are allowed');
-        } else if (Notification.permission === 'denied') {
-            results.push('   ❌ Notifications BLOCKED - Fix in browser settings!');
-        } else {
-            results.push('   ⚠️  Click "Enable" to allow notifications');
-        }
-        
-        // Check service worker
-        results.push('\n🔧 SERVICE WORKER:');
-        if (navigator.serviceWorker.controller) {
-            results.push('   ✅ Service worker is active');
-        } else {
-            results.push('   ❌ No service worker active - hard refresh needed');
-        }
-        
-        const regs = await navigator.serviceWorker.getRegistrations();
-        results.push('   Registered workers: ' + regs.length);
-        regs.forEach((reg, i) => {
-            results.push(`   ${i + 1}. ${reg.active ? '✅' : '⚠️ '} ${reg.scope}`);
-        });
-        
-        // Check Firebase
-        results.push('\n🔥 FIREBASE:');
-        results.push('   Initialized: ' + (firebaseInitialized ? '✅ Yes' : '❌ No'));
-        results.push('   Firestore: ' + (db ? '✅ Connected' : '❌ Not connected'));
-        results.push('   Messaging: ' + (messaging ? '✅ Available' : '❌ Not available'));
-        
-        // Check FCM token
-        results.push('\n🎫 FCM TOKEN:');
-        if (fcmToken) {
-            results.push('   ✅ Token obtained');
-            results.push('   Preview: ' + fcmToken.substring(0, 40) + '...');
-            results.push('   Length: ' + fcmToken.length + ' chars');
-            
-            // Check if in Firestore
-            if (db) {
-                try {
-                    const doc = await db.collection('fcm_tokens').doc(fcmToken).get();
-                    if (doc.exists) {
-                        results.push('   ✅ Token saved in Firestore');
-                        const data = doc.data();
-                        results.push('   Registered: ' + (data.timestamp?.toDate() || 'unknown'));
-                    } else {
-                        results.push('   ❌ Token NOT in Firestore!');
-                    }
-                } catch (e) {
-                    results.push('   ❌ Error checking Firestore: ' + e.message);
-                }
-            }
-        } else {
-            results.push('   ❌ No token obtained yet');
-            results.push('   📝 Click "Enable" to get token');
-        }
-        
-        // Check Firestore collections
-        if (db) {
-            results.push('\n💾 FIRESTORE DATA:');
-            try {
-                const tokensSnapshot = await db.collection('fcm_tokens').get();
-                results.push('   Total FCM tokens: ' + tokensSnapshot.size);
-                if (tokensSnapshot.size === 0) {
-                    results.push('   ⚠️  No tokens = no push notifications possible!');
-                }
-                
-                const queueSnapshot = await db.collection('push_queue').get();
-                results.push('   Push queue items: ' + queueSnapshot.size);
-                if (queueSnapshot.size > 0) {
-                    results.push('   ⚠️  Queue not empty - functions may not be processing!');
-                }
-            } catch (e) {
-                results.push('   ❌ Error reading Firestore: ' + e.message);
-            }
-        }
-        
-        results.push('\n' + '='.repeat(70));
-        results.push('💡 SUMMARY:');
-        
-        const issues = [];
-        if (Notification.permission !== 'granted') issues.push('Grant notification permission');
-        if (!navigator.serviceWorker.controller) issues.push('Hard refresh page (Ctrl+Shift+R)');
-        if (!fcmToken) issues.push('Click "Enable" to register token');
-        if (!firebaseInitialized) issues.push('Fix Firebase initialization');
-        
-        if (issues.length === 0) {
-            results.push('   ✅ Everything looks good!');
-            results.push('   Try sending a test notification from admin panel');
-        } else {
-            results.push('   ⚠️  Issues found:');
-            issues.forEach((issue, i) => {
-                results.push(`   ${i + 1}. ${issue}`);
-            });
-        }
-        
-        results.push('='.repeat(70));
-        
-        const output = results.join('\n');
-        console.log(output);
-        alert('Diagnostics complete! Check browser console (F12) for details.');
-        return output;
-    }
-
-    // Make diagnostic function globally available
-    window.runDiagnostics = runDiagnostics;
 
     // Load notifications from Firebase
     function loadNotifications() {
@@ -431,9 +593,10 @@
                     });
                 });
                 
+                debugLog(`Loaded ${notifications.length} notifications`);
                 render();
             }, (error) => {
-                console.error('Error loading notifications:', error);
+                debugLog(`Error loading notifications: ${error.message}`, true);
             });
     }
 
@@ -475,9 +638,10 @@
                 });
                 
                 syncStatus = 'synced';
+                debugLog(`Loaded ${bets.length} bets`);
                 render();
             }, (error) => {
-                console.error('Error loading bets:', error);
+                debugLog(`Error loading bets: ${error.message}`, true);
                 syncStatus = 'error';
                 render();
             });
@@ -529,7 +693,7 @@
         return icons[type] || '📬';
     }
 
-    // Render UI (keeping mostly the same, adding diagnostic panel)
+    // Render UI
     function render() {
         const root = document.getElementById('root');
         
@@ -557,18 +721,18 @@
                 </div>
                 
                 ${statusBadge}
-                
-                <div class="diagnostic-panel">
-                    <strong>🔧 Troubleshooting Push Notifications</strong><br>
-                    <small>Not receiving notifications? Run diagnostics to find the issue.</small><br>
-                    <button class="btn btn-secondary" onclick="runDiagnostics()" style="padding: 0.5rem 1rem; font-size: 0.875rem; margin-top: 0.5rem;">
-                        Run Diagnostics
-                    </button>
-                    <small style="display: block; margin-top: 0.5rem; opacity: 0.8;">
-                        Results will appear in browser console (Press F12)
-                    </small>
-                </div>
         `;
+
+        // Debug info (show if there are issues)
+        if (notificationPermission === 'granted' && fcmToken) {
+            content += `
+                <div class="debug-info success">
+                    ✅ Notifications Enabled<br>
+                    🎫 FCM Token: ${fcmToken.substring(0, 30)}...<br>
+                    📱 Status: Ready to receive push notifications
+                </div>
+            `;
+        }
 
         // Notification permission banner
         if (showNotificationBanner && notificationPermission === 'default') {
@@ -576,7 +740,7 @@
                 <div class="notification-banner">
                     <div class="notification-banner-content">
                         <div class="notification-banner-title">🔔 Enable Push Notifications</div>
-                        <div class="notification-banner-text">Get instant alerts for new bets and updates</div>
+                        <div class="notification-banner-text">Get instant alerts for new bets and updates - even when this tab is closed!</div>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         <button class="btn btn-primary" onclick="requestNotificationPermission()">Enable</button>
@@ -586,11 +750,13 @@
             `;
         }
         
-        // Rest of the UI rendering (keeping same as original)
-        // ... (notifications section, bets section, report - same as original public.html)
-        
+        // Notifications Section
         if (notifications.length > 0) {
-            content += `<div class="notifications-section"><h2 class="section-title">📬 Messages</h2>`;
+            content += `
+                <div class="notifications-section">
+                    <h2 class="section-title">📬 Messages</h2>
+            `;
+            
             notifications.forEach(notif => {
                 content += `
                     <div class="notification-card">
@@ -603,9 +769,11 @@
                     </div>
                 `;
             });
+            
             content += '</div>';
         }
         
+        // Bets Section
         content += '<h2 class="section-title">🎲 Active Bets</h2>';
         
         if (bets.length === 0) {
@@ -631,13 +799,25 @@
                         <div style="color: #8b92b0; margin-bottom: 1rem;">${bet.bet}</div>
                         
                         <div class="bet-details">
-                            <div><div class="detail-label">Stake</div><div class="detail-value">₹${bet.stake.toLocaleString()}</div></div>
-                            <div><div class="detail-label">Odds</div><div class="detail-value">${bet.odds}</div></div>
-                            <div><div class="detail-label">Potential Return</div><div class="detail-value">₹${bet.potentialReturn.toLocaleString()}</div></div>
+                            <div>
+                                <div class="detail-label">Stake</div>
+                                <div class="detail-value">₹${bet.stake.toLocaleString()}</div>
+                            </div>
+                            <div>
+                                <div class="detail-label">Odds</div>
+                                <div class="detail-value">${bet.odds}</div>
+                            </div>
+                            <div>
+                                <div class="detail-label">Potential Return</div>
+                                <div class="detail-value">₹${bet.potentialReturn.toLocaleString()}</div>
+                            </div>
                             ${bet.outcome !== 'pending' ? `
-                            <div><div class="detail-label">Profit/Loss</div><div class="detail-value" style="color: ${bet.profit >= 0 ? '#22c55e' : '#ef4444'}">
-                                ${bet.profit >= 0 ? '+' : ''}₹${bet.profit.toLocaleString()}
-                            </div></div>
+                            <div>
+                                <div class="detail-label">Profit/Loss</div>
+                                <div class="detail-value" style="color: ${bet.profit >= 0 ? '#22c55e' : '#ef4444'}">
+                                    ${bet.profit >= 0 ? '+' : ''}₹${bet.profit.toLocaleString()}
+                                </div>
+                            </div>
                             ` : ''}
                         </div>
                     </div>
@@ -645,19 +825,41 @@
             });
         }
         
+        // Add report at the bottom
         content += `
             <div class="report-card">
                 <div class="report-title">📊 Today's Report</div>
                 <div class="report-stats">
-                    <div class="stat-box"><div class="stat-label">Total Bets</div><div class="stat-value">${report.totalBets}</div></div>
-                    <div class="stat-box"><div class="stat-label">Won</div><div class="stat-value" style="color: #22c55e">${report.wonBets}</div></div>
-                    <div class="stat-box"><div class="stat-label">Lost</div><div class="stat-value" style="color: #ef4444">${report.lostBets}</div></div>
-                    <div class="stat-box"><div class="stat-label">Void</div><div class="stat-value" style="color: #9ca3af">${report.voidBets}</div></div>
-                    <div class="stat-box"><div class="stat-label">Pending</div><div class="stat-value" style="color: #facc15">${report.pendingBets}</div></div>
-                    <div class="stat-box"><div class="stat-label">Win Rate</div><div class="stat-value">${report.winRate.toFixed(1)}%</div></div>
-                    <div class="stat-box"><div class="stat-label">Total P/L</div><div class="stat-value" style="color: ${report.totalProfit >= 0 ? '#22c55e' : '#ef4444'}">
-                        ${report.totalProfit >= 0 ? '+' : ''}₹${report.totalProfit.toLocaleString()}
-                    </div></div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Bets</div>
+                        <div class="stat-value">${report.totalBets}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Won</div>
+                        <div class="stat-value" style="color: #22c55e">${report.wonBets}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Lost</div>
+                        <div class="stat-value" style="color: #ef4444">${report.lostBets}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Void</div>
+                        <div class="stat-value" style="color: #9ca3af">${report.voidBets}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" style="color: #facc15">${report.pendingBets}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value">${report.winRate.toFixed(1)}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total P/L</div>
+                        <div class="stat-value" style="color: ${report.totalProfit >= 0 ? '#22c55e' : '#ef4444'}">
+                            ${report.totalProfit >= 0 ? '+' : ''}₹${report.totalProfit.toLocaleString()}
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -666,15 +868,36 @@
         root.innerHTML = content;
     }
 
-    // Initialize
-    console.log('🚀 Initializing app...');
-    console.log('💡 Tip: Run window.runDiagnostics() in console to troubleshoot');
+    // Initialize everything
     render();
     if (firebaseInitialized) {
         loadBets();
         loadNotifications();
         initializeFCM();
     }
+
+    // Test notification button (for debugging)
+    window.testNotification = function() {
+        if (Notification.permission === 'granted') {
+            new Notification('🧪 Test Notification', {
+                body: 'This is a manual test notification',
+                icon: './icon-192.png',
+                tag: 'test'
+            });
+            debugLog('✅ Test notification shown');
+        } else {
+            alert('Please enable notifications first');
+            debugLog('⚠️ Cannot test - permission not granted');
+        }
+    };
+
+    // Expose debug info
+    window.showDebugInfo = function() {
+        console.log('=== FCM Debug Info ===');
+        console.log(debugInfo);
+        console.log('======================');
+        alert('Check browser console for debug info');
+    };
 </script>
 ```
 
