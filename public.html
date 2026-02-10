@@ -57,24 +57,57 @@
         color: #8b92b0;
     }
 
-    .notification-banner {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
-        border: 1px solid rgba(59, 130, 246, 0.3);
+    .alert-box {
         border-radius: 16px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
     }
 
-    .notification-banner-title {
-        font-weight: 700;
-        font-size: 1.125rem;
-        margin-bottom: 0.5rem;
+    .alert-error {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+        border: 2px solid rgba(239, 68, 68, 0.5);
     }
 
-    .notification-banner-text {
-        color: #8b92b0;
-        font-size: 0.875rem;
+    .alert-warning {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+        border: 2px solid rgba(251, 191, 36, 0.5);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%);
+        border: 2px solid rgba(34, 197, 94, 0.5);
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+        border: 2px solid rgba(59, 130, 246, 0.5);
+    }
+
+    .alert-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-content {
+        color: #e5e7eb;
+        line-height: 1.6;
         margin-bottom: 1rem;
+    }
+
+    .alert-steps {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    .alert-steps ol {
+        margin-left: 1.5rem;
+        line-height: 1.8;
     }
 
     .btn {
@@ -86,6 +119,8 @@
         font-weight: 600;
         transition: all 0.2s;
         margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        display: inline-block;
     }
 
     .btn-primary {
@@ -93,14 +128,14 @@
         color: white;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
     }
 
-    .btn-primary:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
+    .btn-success {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: white;
     }
 
     .btn-secondary {
@@ -109,27 +144,33 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .debug-info {
-        background: rgba(250, 204, 21, 0.15);
-        border: 1px solid rgba(250, 204, 21, 0.4);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        font-size: 0.875rem;
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .instruction-box {
+        background: rgba(0, 0, 0, 0.3);
+        border-left: 4px solid #fbbf24;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+
+    .code-box {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.75rem;
+        border-radius: 8px;
         font-family: 'Courier New', monospace;
-    }
-
-    .debug-info strong {
-        color: #fbbf24;
-    }
-
-    .debug-step {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .debug-step:last-child {
-        border-bottom: none;
+        font-size: 0.875rem;
+        margin: 0.5rem 0;
+        overflow-x: auto;
     }
     
     .notifications-section {
@@ -338,24 +379,6 @@
         background: rgba(239, 68, 68, 0.2);
         color: #ef4444;
     }
-
-    .success-message {
-        background: rgba(34, 197, 94, 0.2);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-        color: #22c55e;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-    }
-
-    .error-message {
-        background: rgba(239, 68, 68, 0.2);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 1rem;
-    }
 </style>
 ```
 
@@ -384,7 +407,7 @@
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
         firebaseInitialized = true;
-        console.log('✅ Firebase initialized successfully');
+        console.log('✅ Firebase initialized');
     } catch (error) {
         console.error('❌ Firebase initialization failed:', error);
     }
@@ -394,175 +417,129 @@
     let notifications = [];
     let syncStatus = 'syncing';
     let notificationPermission = 'default';
-    let showNotificationBanner = true;
     let fcmToken = null;
-    let debugMode = true;
-    let debugLog = [];
-    let setupStatus = '';
-    let errorMessage = '';
+    let permissionDenied = false;
+    let setupComplete = false;
 
-    // Debugging function
-    function addDebug(message, isError = false) {
-        const timestamp = new Date().toLocaleTimeString();
-        const entry = `[${timestamp}] ${message}`;
-        debugLog.push(entry);
-        console.log(message);
-        if (debugLog.length > 15) debugLog.shift();
-        if (isError) errorMessage = message;
-        render();
-    }
-
-    // Check notification permission on load
+    // Check notification permission
     if ('Notification' in window) {
         notificationPermission = Notification.permission;
-        addDebug(`Initial notification permission: ${notificationPermission}`);
+        console.log('Initial permission:', notificationPermission);
         
-        // If already granted, try to initialize FCM immediately
-        if (notificationPermission === 'granted') {
-            showNotificationBanner = false;
-            addDebug('Permission already granted, initializing FCM...');
+        if (notificationPermission === 'denied') {
+            permissionDenied = true;
+        } else if (notificationPermission === 'granted') {
+            // Try to initialize FCM
             setTimeout(initializeFCM, 1000);
         }
-    } else {
-        addDebug('❌ Notifications not supported in this browser', true);
     }
 
     // Initialize FCM
     async function initializeFCM() {
         if (!firebaseInitialized) {
-            addDebug('❌ Firebase not initialized', true);
+            console.error('Firebase not initialized');
             return;
         }
 
         try {
-            // Check if messaging is supported
             if (!firebase.messaging.isSupported()) {
-                addDebug('⚠️ FCM not supported on this browser');
+                console.warn('FCM not supported');
                 return;
             }
 
             messaging = firebase.messaging();
-            addDebug('✅ FCM messaging instance created');
+            console.log('✅ FCM messaging created');
             
-            // Try to get existing token first
-            try {
-                // Register service worker
-                addDebug('📝 Registering service worker...');
-                const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-                addDebug(`✅ Service worker registered`);
+            // Register service worker
+            const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+            console.log('✅ Service worker registered');
 
-                // Wait for SW to be ready
-                await navigator.serviceWorker.ready;
-                addDebug('✅ Service worker is ready');
+            await navigator.serviceWorker.ready;
+            console.log('✅ Service worker ready');
 
-                // Get FCM token
-                addDebug('🔑 Getting FCM token...');
-                const token = await messaging.getToken({
-                    serviceWorkerRegistration: registration
-                });
-                
-                if (token) {
-                    fcmToken = token;
-                    addDebug(`✅ FCM Token obtained: ${token.substring(0, 20)}...`);
+            // Get FCM token
+            const token = await messaging.getToken({
+                serviceWorkerRegistration: registration
+            });
+            
+            if (token) {
+                fcmToken = token;
+                console.log('✅ FCM Token:', token);
 
-                    // Save token to Firestore
-                    if (db) {
-                        addDebug('💾 Saving token to Firestore...');
-                        await db.collection('fcm_tokens').doc(token).set({
-                            token: token,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            userAgent: navigator.userAgent,
-                            lastUpdated: new Date().toISOString()
-                        });
-                        addDebug('✅ Token saved to Firestore!');
-                        setupStatus = 'success';
-                    }
-                } else {
-                    addDebug('❌ No token received', true);
+                // Save to Firestore
+                if (db) {
+                    await db.collection('fcm_tokens').doc(token).set({
+                        token: token,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        userAgent: navigator.userAgent,
+                        lastUpdated: new Date().toISOString()
+                    });
+                    console.log('✅ Token saved to Firestore');
+                    setupComplete = true;
                 }
-            } catch (tokenError) {
-                addDebug(`❌ Token error: ${tokenError.message}`, true);
-                console.error('Token error:', tokenError);
             }
             
             // Handle foreground messages
             messaging.onMessage((payload) => {
-                addDebug('📨 Foreground message received');
-                console.log('Message payload:', payload);
-                
-                const notificationTitle = payload.notification?.title || 'Betting Tracker';
-                const notificationOptions = {
+                console.log('📨 Message received:', payload);
+                const title = payload.notification?.title || 'Betting Tracker';
+                const options = {
                     body: payload.notification?.body || 'New notification',
                     icon: './icon-192.png',
                     badge: './icon-192.png',
                     tag: 'bet-notification'
                 };
-
                 if (Notification.permission === 'granted') {
-                    new Notification(notificationTitle, notificationOptions);
-                    addDebug('✅ Foreground notification displayed');
+                    new Notification(title, options);
                 }
             });
 
-            addDebug('✅ FCM fully initialized');
+            render();
         } catch (error) {
-            addDebug(`❌ FCM initialization error: ${error.message}`, true);
-            console.error('FCM Error:', error);
+            console.error('❌ FCM error:', error);
+            render();
         }
     }
 
     // Request notification permission
     async function requestNotificationPermission() {
-        addDebug('🔔 Requesting notification permission...');
-        errorMessage = '';
-        
         if (!('Notification' in window)) {
-            errorMessage = 'This browser does not support notifications';
-            render();
+            alert('This browser does not support notifications');
             return;
         }
 
         try {
             const permission = await Notification.requestPermission();
-            addDebug(`Permission result: ${permission}`);
+            console.log('Permission result:', permission);
+            notificationPermission = permission;
 
             if (permission === 'granted') {
-                notificationPermission = 'granted';
-                showNotificationBanner = false;
-                addDebug('✅ Notification permission granted!');
-                
-                // Now initialize FCM
+                permissionDenied = false;
                 await initializeFCM();
                 
-                // Show success notification
-                if (setupStatus === 'success') {
+                if (setupComplete) {
                     new Notification('Push Notifications Enabled! 🎉', {
-                        body: 'You will now receive alerts even when app is closed',
+                        body: 'You will receive alerts even when app is closed',
                         icon: './icon-192.png'
                     });
                 }
-            } else {
-                notificationPermission = permission;
-                showNotificationBanner = false;
-                errorMessage = 'Notifications denied. Enable them in browser settings to receive push notifications.';
+            } else if (permission === 'denied') {
+                permissionDenied = true;
             }
 
             render();
         } catch (error) {
-            addDebug(`❌ Permission error: ${error.message}`, true);
-            errorMessage = `Error: ${error.message}`;
-            render();
+            console.error('Permission error:', error);
+            alert('Error requesting permission: ' + error.message);
         }
     }
 
-    // Dismiss notification banner
-    function dismissNotificationBanner() {
-        showNotificationBanner = false;
-        localStorage.setItem('notificationBannerDismissed', 'true');
-        render();
+    // Open browser settings
+    function openBrowserSettings() {
+        alert('Opening browser settings is not possible from JavaScript.\n\nPlease follow the manual instructions shown below to enable notifications.');
     }
 
-    // Load notifications from Firebase
+    // Load notifications
     function loadNotifications() {
         if (!firebaseInitialized || !db) return;
 
@@ -571,7 +548,6 @@
             .limit(10)
             .onSnapshot((snapshot) => {
                 notifications = [];
-                
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     notifications.push({
@@ -582,15 +558,11 @@
                         timestamp: data.timestamp?.toDate() || new Date()
                     });
                 });
-                
-                addDebug(`📬 Loaded ${notifications.length} notifications`);
                 render();
-            }, (error) => {
-                addDebug(`❌ Error loading notifications: ${error.message}`, true);
             });
     }
 
-    // Load bets from Firebase
+    // Load bets
     function loadBets() {
         if (!firebaseInitialized || !db) {
             syncStatus = 'error';
@@ -627,12 +599,10 @@
                 });
                 
                 syncStatus = 'synced';
-                addDebug(`🎲 Loaded ${bets.length} bets for today`);
                 render();
             }, (error) => {
                 console.error('Error loading bets:', error);
                 syncStatus = 'error';
-                addDebug(`❌ Error loading bets: ${error.message}`, true);
                 render();
             });
     }
@@ -713,53 +683,103 @@
                 ${statusBadge}
         `;
 
-        // Success message
-        if (setupStatus === 'success') {
+        // Show appropriate alert based on state
+        if (setupComplete && fcmToken) {
+            // SUCCESS
             content += `
-                <div class="success-message">
-                    ✅ <strong>Push Notifications Enabled!</strong><br>
-                    You will now receive alerts even when the app is closed.<br>
-                    <small>Token registered: ${fcmToken ? fcmToken.substring(0, 30) + '...' : 'Yes'}</small>
-                </div>
-            `;
-        }
-
-        // Error message
-        if (errorMessage) {
-            content += `
-                <div class="error-message">
-                    ❌ <strong>Error:</strong> ${errorMessage}
-                </div>
-            `;
-        }
-
-        // Debug info
-        if (debugMode && debugLog.length > 0) {
-            content += `
-                <div class="debug-info">
-                    <strong>🔧 Debug Log:</strong>
-                    ${debugLog.map(msg => `<div class="debug-step">${msg}</div>`).join('')}
-                    <div class="debug-step" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid rgba(251, 191, 36, 0.3);">
-                        <strong>Status:</strong><br>
-                        FCM Token: ${fcmToken ? '✅ ' + fcmToken.substring(0, 30) + '...' : '❌ Not registered'}<br>
-                        Permission: ${notificationPermission}<br>
-                        Messaging: ${messaging ? '✅ Initialized' : '❌ Not initialized'}
+                <div class="alert-box alert-success">
+                    <div class="alert-title">✅ Push Notifications Active!</div>
+                    <div class="alert-content">
+                        You will now receive alerts even when the app is closed.<br>
+                        <small>Token: ${fcmToken.substring(0, 40)}...</small>
                     </div>
                 </div>
             `;
-        }
-
-        // Notification permission banner
-        if (showNotificationBanner && notificationPermission === 'default') {
+        } else if (permissionDenied) {
+            // PERMISSION DENIED - Show detailed instructions
             content += `
-                <div class="notification-banner">
-                    <div class="notification-banner-title">🔔 Enable Push Notifications</div>
-                    <div class="notification-banner-text">
-                        Get instant alerts for new bets and updates - even when app is closed!<br>
-                        <small style="color: #9ca3af;">Works on Chrome, Firefox, Edge (not Safari iOS)</small>
+                <div class="alert-box alert-error">
+                    <div class="alert-title">❌ Notifications Denied</div>
+                    <div class="alert-content">
+                        You previously denied notification permissions. To enable push notifications, you need to manually allow them in your browser settings.
                     </div>
-                    <button class="btn btn-primary" onclick="requestNotificationPermission()">Enable Now</button>
-                    <button class="btn btn-secondary" onclick="dismissNotificationBanner()">Maybe Later</button>
+
+                    <div class="instruction-box">
+                        <strong>📱 On Mobile Chrome/Android:</strong>
+                        <div class="alert-steps">
+                            <ol>
+                                <li>Tap the <strong>lock icon (🔒)</strong> next to the URL at the top</li>
+                                <li>Tap <strong>"Permissions"</strong> or <strong>"Site settings"</strong></li>
+                                <li>Find <strong>"Notifications"</strong></li>
+                                <li>Change from <strong>"Blocked"</strong> to <strong>"Allow"</strong></li>
+                                <li>Refresh this page</li>
+                                <li>Click the "Enable" button that appears</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="instruction-box">
+                        <strong>💻 On Desktop Chrome:</strong>
+                        <div class="alert-steps">
+                            <ol>
+                                <li>Click the <strong>lock/info icon</strong> in the address bar</li>
+                                <li>Click <strong>"Site settings"</strong></li>
+                                <li>Find <strong>"Notifications"</strong></li>
+                                <li>Change to <strong>"Allow"</strong></li>
+                                <li>Refresh this page</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="instruction-box">
+                        <strong>🔄 Alternative - Clear Site Data:</strong>
+                        <div class="alert-steps">
+                            <ol>
+                                <li>Chrome Menu (3 dots) → Settings</li>
+                                <li>Privacy and security → Clear browsing data</li>
+                                <li>Advanced → All time</li>
+                                <li>Check "Cookies" and "Cached images"</li>
+                                <li>Clear data</li>
+                                <li>Refresh this page</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="requestNotificationPermission()">
+                            🔄 Try Again
+                        </button>
+                        <button class="btn btn-secondary" onclick="location.reload()">
+                            ♻️ Refresh Page
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (notificationPermission === 'granted' && !fcmToken) {
+            // PERMISSION GRANTED BUT TOKEN FAILED
+            content += `
+                <div class="alert-box alert-warning">
+                    <div class="alert-title">⚠️ Permission Granted, Getting Token...</div>
+                    <div class="alert-content">
+                        Notification permission is granted. Trying to get FCM token...<br>
+                        <small>If this doesn't resolve in a few seconds, try refreshing the page.</small>
+                    </div>
+                    <button class="btn btn-secondary" onclick="location.reload()">♻️ Refresh Page</button>
+                </div>
+            `;
+        } else if (notificationPermission === 'default') {
+            // NOT YET ASKED
+            content += `
+                <div class="alert-box alert-info">
+                    <div class="alert-title">🔔 Enable Push Notifications</div>
+                    <div class="alert-content">
+                        Get instant alerts for new bets and updates - even when the app is closed!
+                        <br><br>
+                        <small style="color: #9ca3af;">Works on Chrome, Firefox, Edge (not Safari on iOS)</small>
+                    </div>
+                    <button class="btn btn-primary" onclick="requestNotificationPermission()">
+                        🔔 Enable Push Notifications
+                    </button>
                 </div>
             `;
         }
@@ -839,7 +859,7 @@
             });
         }
         
-        // Add report at the bottom
+        // Report
         content += `
             <div class="report-card">
                 <div class="report-title">📊 Today's Report</div>
@@ -883,7 +903,7 @@
     }
 
     // Initialize
-    addDebug('🚀 Initializing app...');
+    console.log('🚀 App starting...');
     render();
     if (firebaseInitialized) {
         loadBets();
