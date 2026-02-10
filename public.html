@@ -57,34 +57,24 @@
         color: #8b92b0;
     }
 
-    /* Notification Permission Banner */
     .notification-banner {
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
         border: 1px solid rgba(59, 130, 246, 0.3);
         border-radius: 16px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .notification-banner-content {
-        flex: 1;
-        min-width: 200px;
     }
 
     .notification-banner-title {
         font-weight: 700;
         font-size: 1.125rem;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
     }
 
     .notification-banner-text {
         color: #8b92b0;
         font-size: 0.875rem;
+        margin-bottom: 1rem;
     }
 
     .btn {
@@ -95,6 +85,7 @@
         font-size: 1rem;
         font-weight: 600;
         transition: all 0.2s;
+        margin-right: 0.5rem;
     }
 
     .btn-primary {
@@ -119,16 +110,28 @@
     }
 
     .debug-info {
-        background: rgba(250, 204, 21, 0.1);
-        border: 1px solid rgba(250, 204, 21, 0.3);
+        background: rgba(250, 204, 21, 0.15);
+        border: 1px solid rgba(250, 204, 21, 0.4);
         border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
         font-size: 0.875rem;
-        font-family: monospace;
+        font-family: 'Courier New', monospace;
+    }
+
+    .debug-info strong {
+        color: #fbbf24;
+    }
+
+    .debug-step {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .debug-step:last-child {
+        border-bottom: none;
     }
     
-    /* Notifications Section */
     .notifications-section {
         margin-bottom: 2rem;
     }
@@ -335,6 +338,24 @@
         background: rgba(239, 68, 68, 0.2);
         color: #ef4444;
     }
+
+    .success-message {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #22c55e;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .error-message {
+        background: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
 </style>
 ```
 
@@ -373,33 +394,43 @@
     let notifications = [];
     let syncStatus = 'syncing';
     let notificationPermission = 'default';
-    let showNotificationBanner = false;
+    let showNotificationBanner = true;
     let fcmToken = null;
-    let debugMode = true; // Set to false in production
-    let debugInfo = [];
+    let debugMode = true;
+    let debugLog = [];
+    let setupStatus = '';
+    let errorMessage = '';
 
     // Debugging function
-    function addDebug(message) {
+    function addDebug(message, isError = false) {
         const timestamp = new Date().toLocaleTimeString();
-        debugInfo.push(`[${timestamp}] ${message}`);
+        const entry = `[${timestamp}] ${message}`;
+        debugLog.push(entry);
         console.log(message);
-        if (debugInfo.length > 10) debugInfo.shift();
-        if (debugMode) render();
+        if (debugLog.length > 15) debugLog.shift();
+        if (isError) errorMessage = message;
+        render();
     }
 
     // Check notification permission on load
     if ('Notification' in window) {
         notificationPermission = Notification.permission;
-        showNotificationBanner = (notificationPermission === 'default');
         addDebug(`Initial notification permission: ${notificationPermission}`);
+        
+        // If already granted, try to initialize FCM immediately
+        if (notificationPermission === 'granted') {
+            showNotificationBanner = false;
+            addDebug('Permission already granted, initializing FCM...');
+            setTimeout(initializeFCM, 1000);
+        }
     } else {
-        addDebug('❌ Notifications not supported in this browser');
+        addDebug('❌ Notifications not supported in this browser', true);
     }
 
     // Initialize FCM
     async function initializeFCM() {
         if (!firebaseInitialized) {
-            addDebug('❌ Firebase not initialized, skipping FCM setup');
+            addDebug('❌ Firebase not initialized', true);
             return;
         }
 
@@ -413,30 +444,69 @@
             messaging = firebase.messaging();
             addDebug('✅ FCM messaging instance created');
             
+            // Try to get existing token first
+            try {
+                // Register service worker
+                addDebug('📝 Registering service worker...');
+                const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+                addDebug(`✅ Service worker registered`);
+
+                // Wait for SW to be ready
+                await navigator.serviceWorker.ready;
+                addDebug('✅ Service worker is ready');
+
+                // Get FCM token
+                addDebug('🔑 Getting FCM token...');
+                const token = await messaging.getToken({
+                    serviceWorkerRegistration: registration
+                });
+                
+                if (token) {
+                    fcmToken = token;
+                    addDebug(`✅ FCM Token obtained: ${token.substring(0, 20)}...`);
+
+                    // Save token to Firestore
+                    if (db) {
+                        addDebug('💾 Saving token to Firestore...');
+                        await db.collection('fcm_tokens').doc(token).set({
+                            token: token,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            userAgent: navigator.userAgent,
+                            lastUpdated: new Date().toISOString()
+                        });
+                        addDebug('✅ Token saved to Firestore!');
+                        setupStatus = 'success';
+                    }
+                } else {
+                    addDebug('❌ No token received', true);
+                }
+            } catch (tokenError) {
+                addDebug(`❌ Token error: ${tokenError.message}`, true);
+                console.error('Token error:', tokenError);
+            }
+            
             // Handle foreground messages
             messaging.onMessage((payload) => {
                 addDebug('📨 Foreground message received');
                 console.log('Message payload:', payload);
                 
-                const notificationTitle = payload.notification?.title || payload.data?.title || 'Betting Tracker';
+                const notificationTitle = payload.notification?.title || 'Betting Tracker';
                 const notificationOptions = {
-                    body: payload.notification?.body || payload.data?.message || 'New notification',
+                    body: payload.notification?.body || 'New notification',
                     icon: './icon-192.png',
                     badge: './icon-192.png',
-                    tag: 'bet-notification',
-                    requireInteraction: false
+                    tag: 'bet-notification'
                 };
 
-                // Show notification if permission granted
                 if (Notification.permission === 'granted') {
                     new Notification(notificationTitle, notificationOptions);
                     addDebug('✅ Foreground notification displayed');
                 }
             });
 
-            addDebug('✅ FCM initialized and message handler attached');
+            addDebug('✅ FCM fully initialized');
         } catch (error) {
-            addDebug(`❌ FCM initialization error: ${error.message}`);
+            addDebug(`❌ FCM initialization error: ${error.message}`, true);
             console.error('FCM Error:', error);
         }
     }
@@ -444,102 +514,44 @@
     // Request notification permission
     async function requestNotificationPermission() {
         addDebug('🔔 Requesting notification permission...');
+        errorMessage = '';
         
         if (!('Notification' in window)) {
-            alert('This browser does not support notifications');
-            return;
-        }
-
-        if (!('serviceWorker' in navigator)) {
-            alert('This browser does not support service workers');
+            errorMessage = 'This browser does not support notifications';
+            render();
             return;
         }
 
         try {
-            // Step 1: Request permission
             const permission = await Notification.requestPermission();
             addDebug(`Permission result: ${permission}`);
 
-            if (permission !== 'granted') {
+            if (permission === 'granted') {
+                notificationPermission = 'granted';
+                showNotificationBanner = false;
+                addDebug('✅ Notification permission granted!');
+                
+                // Now initialize FCM
+                await initializeFCM();
+                
+                // Show success notification
+                if (setupStatus === 'success') {
+                    new Notification('Push Notifications Enabled! 🎉', {
+                        body: 'You will now receive alerts even when app is closed',
+                        icon: './icon-192.png'
+                    });
+                }
+            } else {
                 notificationPermission = permission;
                 showNotificationBanner = false;
-                alert('Notifications were denied. Please enable them in your browser settings.');
-                render();
-                return;
-            }
-
-            notificationPermission = 'granted';
-            addDebug('✅ Notification permission granted');
-
-            // Step 2: Register service worker
-            addDebug('📝 Registering service worker...');
-            const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js', {
-                scope: './'
-            });
-            
-            addDebug(`✅ Service worker registered: ${registration.scope}`);
-
-            // Step 3: Wait for service worker to be ready
-            await navigator.serviceWorker.ready;
-            addDebug('✅ Service worker is ready');
-
-            // Step 4: Get FCM token
-            if (!messaging) {
-                addDebug('❌ Messaging not initialized');
-                alert('Messaging service not available');
-                return;
-            }
-
-            try {
-                addDebug('🔑 Getting FCM token...');
-                const token = await messaging.getToken({
-                    serviceWorkerRegistration: registration
-                });
-                
-                if (!token) {
-                    addDebug('❌ No FCM token received');
-                    alert('Could not get push notification token');
-                    return;
-                }
-
-                fcmToken = token;
-                addDebug(`✅ FCM Token obtained: ${token.substring(0, 20)}...`);
-
-                // Step 5: Save token to Firestore
-                if (db) {
-                    addDebug('💾 Saving token to Firestore...');
-                    await db.collection('fcm_tokens').doc(token).set({
-                        token: token,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        userAgent: navigator.userAgent,
-                        lastUpdated: new Date().toISOString()
-                    });
-                    addDebug('✅ Token saved to Firestore successfully');
-                }
-
-                // Success!
-                showNotificationBanner = false;
-                new Notification('Notifications Enabled! 🎉', {
-                    body: 'You will now receive push notifications for new bets and updates',
-                    icon: './icon-192.png'
-                });
-                
-                addDebug('🎉 Push notifications fully configured!');
-
-            } catch (tokenError) {
-                addDebug(`❌ Token error: ${tokenError.message}`);
-                console.error('Token error:', tokenError);
-                
-                // Fallback: Still show that in-app notifications work
-                showNotificationBanner = false;
-                alert('Basic notifications enabled. Push notifications may not work when app is closed.');
+                errorMessage = 'Notifications denied. Enable them in browser settings to receive push notifications.';
             }
 
             render();
         } catch (error) {
-            addDebug(`❌ Setup error: ${error.message}`);
-            console.error('Notification setup error:', error);
-            alert(`Error setting up notifications: ${error.message}`);
+            addDebug(`❌ Permission error: ${error.message}`, true);
+            errorMessage = `Error: ${error.message}`;
+            render();
         }
     }
 
@@ -547,14 +559,7 @@
     function dismissNotificationBanner() {
         showNotificationBanner = false;
         localStorage.setItem('notificationBannerDismissed', 'true');
-        addDebug('ℹ️ Notification banner dismissed');
         render();
-    }
-
-    // Check if banner was dismissed before
-    const bannerDismissed = localStorage.getItem('notificationBannerDismissed');
-    if (bannerDismissed && notificationPermission === 'default') {
-        showNotificationBanner = false;
     }
 
     // Load notifications from Firebase
@@ -581,8 +586,7 @@
                 addDebug(`📬 Loaded ${notifications.length} notifications`);
                 render();
             }, (error) => {
-                addDebug(`❌ Error loading notifications: ${error.message}`);
-                console.error('Error loading notifications:', error);
+                addDebug(`❌ Error loading notifications: ${error.message}`, true);
             });
     }
 
@@ -606,7 +610,6 @@
                     const betDate = data.timestamp?.toDate() || new Date();
                     betDate.setHours(0, 0, 0, 0);
                     
-                    // Only show today's bets
                     if (betDate.getTime() === today.getTime()) {
                         bets.push({
                             id: doc.id,
@@ -629,7 +632,7 @@
             }, (error) => {
                 console.error('Error loading bets:', error);
                 syncStatus = 'error';
-                addDebug(`❌ Error loading bets: ${error.message}`);
+                addDebug(`❌ Error loading bets: ${error.message}`, true);
                 render();
             });
     }
@@ -710,16 +713,38 @@
                 ${statusBadge}
         `;
 
-        // Debug info (only if debug mode is on)
-        if (debugMode && debugInfo.length > 0) {
+        // Success message
+        if (setupStatus === 'success') {
+            content += `
+                <div class="success-message">
+                    ✅ <strong>Push Notifications Enabled!</strong><br>
+                    You will now receive alerts even when the app is closed.<br>
+                    <small>Token registered: ${fcmToken ? fcmToken.substring(0, 30) + '...' : 'Yes'}</small>
+                </div>
+            `;
+        }
+
+        // Error message
+        if (errorMessage) {
+            content += `
+                <div class="error-message">
+                    ❌ <strong>Error:</strong> ${errorMessage}
+                </div>
+            `;
+        }
+
+        // Debug info
+        if (debugMode && debugLog.length > 0) {
             content += `
                 <div class="debug-info">
-                    <strong>🔧 Debug Log:</strong><br>
-                    ${debugInfo.map(msg => `• ${msg}`).join('<br>')}
-                    <br><br>
-                    <strong>FCM Token:</strong> ${fcmToken ? fcmToken.substring(0, 30) + '...' : 'Not registered'}<br>
-                    <strong>Permission:</strong> ${notificationPermission}<br>
-                    <strong>Messaging:</strong> ${messaging ? 'Initialized' : 'Not initialized'}
+                    <strong>🔧 Debug Log:</strong>
+                    ${debugLog.map(msg => `<div class="debug-step">${msg}</div>`).join('')}
+                    <div class="debug-step" style="margin-top: 1rem; padding-top: 1rem; border-top: 2px solid rgba(251, 191, 36, 0.3);">
+                        <strong>Status:</strong><br>
+                        FCM Token: ${fcmToken ? '✅ ' + fcmToken.substring(0, 30) + '...' : '❌ Not registered'}<br>
+                        Permission: ${notificationPermission}<br>
+                        Messaging: ${messaging ? '✅ Initialized' : '❌ Not initialized'}
+                    </div>
                 </div>
             `;
         }
@@ -728,14 +753,13 @@
         if (showNotificationBanner && notificationPermission === 'default') {
             content += `
                 <div class="notification-banner">
-                    <div class="notification-banner-content">
-                        <div class="notification-banner-title">🔔 Enable Push Notifications</div>
-                        <div class="notification-banner-text">Get instant alerts for new bets and updates - even when app is closed!</div>
+                    <div class="notification-banner-title">🔔 Enable Push Notifications</div>
+                    <div class="notification-banner-text">
+                        Get instant alerts for new bets and updates - even when app is closed!<br>
+                        <small style="color: #9ca3af;">Works on Chrome, Firefox, Edge (not Safari iOS)</small>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-primary" onclick="requestNotificationPermission()">Enable</button>
-                        <button class="btn btn-secondary" onclick="dismissNotificationBanner()">Later</button>
-                    </div>
+                    <button class="btn btn-primary" onclick="requestNotificationPermission()">Enable Now</button>
+                    <button class="btn btn-secondary" onclick="dismissNotificationBanner()">Maybe Later</button>
                 </div>
             `;
         }
@@ -864,7 +888,6 @@
     if (firebaseInitialized) {
         loadBets();
         loadNotifications();
-        initializeFCM();
     }
 </script>
 ```
